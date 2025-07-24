@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <title>Veda v kocke - Kvíz</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to right, #6dd5ed, #2193b0);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: rgba(0, 0, 0, 0.4);
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            text-align: center;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            border: none;
+        }
+        .hidden {
+            display: none;
+        }
+        video {
+            margin-top: 20px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Vitajte na stránke Veda v kocke!</h2>
+        <p>Prihláste sa e-mailom, aby ste mohli odpovedať na kvízovú otázku.</p>
+
+        <input type="email" id="email" placeholder="Váš e-mail" required>
+        <button onclick="validateEmail()">Prihlásiť sa</button>
+
+        <div id="quiz" class="hidden">
+            <h3>Otázka: Koľko je 2 + 2?</h3>
+            <button onclick="checkAnswer(3)">3</button>
+            <button onclick="checkAnswer(4)">4</button>
+            <button onclick="checkAnswer(5)">5</button>
+        </div>
+
+        <video id="resultVideo" class="hidden" width="320" controls>
+            <source src="video.mp4" type="video/mp4">
+            Váš prehliadač nepodporuje prehrávanie videa.
+        </video>
+    </div>
+
+    <script>
+        let userEmail = "";
+
+        function validateEmail() {
+            const emailInput = document.getElementById("email").value;
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (regex.test(emailInput)) {
+                userEmail = emailInput;
+                document.getElementById("quiz").classList.remove("hidden");
+                alert("Prihlásenie úspešné!");
+            } else {
+                alert("Zadajte platný e-mail.");
+            }
+        }
+
+        function checkAnswer(answer) {
+            const correct = answer === 4;
+            const message = correct ? "Správne!" : "Nesprávne.";
+
+            // Simulované odosielanie emailu
+            console.log(`Odosielam email na ${userEmail} s výsledkom: ${message}`);
+
+            alert(message + " Pozrite si video!");
+            document.getElementById("resultVideo").classList.remove("hidden");
+            document.getElementById("resultVideo").play();
+        }
+    </script>
+</body>
+</html>
