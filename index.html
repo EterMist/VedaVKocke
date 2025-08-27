@@ -1,346 +1,208 @@
 <!DOCTYPE html>
 <html lang="sk">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Veda v kocke — Tri kvízy (BIO / FYZ / CHE)</title>
-  <meta name="description" content="Interaktívny kvíz Veda v kocke — Biológia, Fyzika, Chémia. Futuristický vzhľad, progres a ukladanie výsledkov podľa e‑mailu." />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>VEDA V KOCKE — Tri kvízy (BIO / FYZ / CHE)</title>
+<style>
+  :root{
+    --bg1:#070b1a; --bg2:#0e1533;
+    --text:#eaf3ff; --muted:#9fb3d7;
+    --cyan:#72d2ff; --pink:#ff7ad9; --green:#5cff94; --blue:#6aa8ff; --purple:#b792ff;
+    --card:rgba(16,22,52,.78); --glass:rgba(255,255,255,.10);
+    --radius:20px; --shadow:0 12px 48px rgba(0,0,0,.45), 0 0 64px rgba(114,210,255,.12);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; color:var(--text);
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Noto Sans","Helvetica Neue",Arial;
+    background:
+      radial-gradient(1200px 700px at 15% -10%, #1c2f7f 0%, transparent 60%),
+      radial-gradient(900px 600px at 85% 0%, #4a176b 0%, transparent 55%),
+      radial-gradient(1200px 800px at 50% 110%, #0c3850 0%, transparent 65%),
+      linear-gradient(180deg, var(--bg1), var(--bg2));
+    background-attachment:fixed; overflow-x:hidden;
+  }
+  body::before{
+    content:""; position:fixed; inset:0; z-index:-1; opacity:.55; pointer-events:none;
+    background-image:
+      radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,.6) 40%, transparent 41%),
+      radial-gradient(1.5px 1.5px at 60% 70%, rgba(255,255,255,.45) 40%, transparent 41%),
+      radial-gradient(1.2px 1.2px at 80% 20%, rgba(255,255,255,.35) 40%, transparent 41%),
+      radial-gradient(1px 1px at 30% 80%, rgba(255,255,255,.25) 40%, transparent 41%);
+  }
 
-  <style>
-    /* =========================================================
-       TÉMA / VZHĽAD — Futuristický tmavý štýl (neon blue/purple/pink)
-       Jemné okraje, dobrý kontrast, prístupnosť, responzivita
-       ========================================================= */
-    :root{
-      --bg1:#070b1a;
-      --bg2:#0e1533;
-      --text:#eaf3ff;
-      --muted:#9fb3d7;
+  .container{max-width:1080px;margin:24px auto;padding:16px}
+  .card{background:var(--card);border:1px solid var(--glass);border-radius:var(--radius);
+        backdrop-filter:blur(10px) saturate(115%);-webkit-backdrop-filter:blur(10px) saturate(115%);box-shadow:var(--shadow);overflow:hidden}
 
-      --cyan:#72d2ff;
-      --pink:#ff7ad9;
-      --green:#5cff94;
-      --blue:#6aa8ff;
-      --purple:#b792ff;
+  header.app{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--glass);
+    background:linear-gradient(90deg,rgba(114,210,255,.12),transparent 45%),linear-gradient(270deg,rgba(255,122,217,.08),transparent 55%)}
+  .brand{display:flex;align-items:center;gap:14px}
+  .logo-img{width:46px;height:46px;border-radius:14px;object-fit:contain;background:rgba(255,255,255,.06)}
+  .brand h1{font-size:1.2rem;margin:0;letter-spacing:.5px}
+  .claim{color:var(--muted);font-size:.95rem;font-weight:700}
+  .btn{padding:12px 16px;border:none;border-radius:12px;font-weight:800;cursor:pointer;color:#061019;
+      background:linear-gradient(90deg,var(--cyan),#9be0ff);box-shadow:0 10px 24px rgba(114,210,255,.35),inset 0 -2px 0 rgba(0,0,0,.25);
+      transition:transform .06s ease,box-shadow .2s}
+  .btn:hover{transform:translateY(-1px)}
+  .btn.ghost{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,.18)}
+  .btn.small{padding:8px 10px;font-size:.9rem}
 
-      --card: rgba(16, 22, 52, .78);
-      --glass-border: rgba(255,255,255,.08);
-      --radius:20px;
-      --shadow: 0 12px 48px rgba(0,0,0,.45), 0 0 64px rgba(114,210,255,.12);
-      --right:#2ecc71;
-      --wrong:#ff5b5b;
-    }
+  main{padding:20px}
 
-    *{ box-sizing:border-box }
-    html,body{ height:100% }
-    body{
-      margin:0;
-      color:var(--text);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Noto Sans", "Helvetica Neue", Arial;
-      background:
-        radial-gradient(1200px 700px at 15% -10%, #1c2f7f 0%, transparent 60%),
-        radial-gradient(900px 600px at 85% 0%, #4a176b 0%, transparent 55%),
-        radial-gradient(1200px 800px at 50% 110%, #0c3850 0%, transparent 65%),
-        linear-gradient(180deg, var(--bg1), var(--bg2));
-      background-attachment: fixed;
-      overflow-x:hidden;
-    }
+  /* HOME */
+  .home{display:grid;gap:18px}
+  .intro{padding:18px;border-radius:18px;background:linear-gradient(180deg,rgba(114,210,255,.06),rgba(255,122,217,.05))}
+  .email-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  label[for=email]{font-weight:700}
+  input[type=email]{flex:1 1 260px;min-width:220px;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.1);
+    background:#0c1335;color:var(--text);outline:none;box-shadow:inset 0 0 0 1px rgba(114,210,255,.08)}
 
-    /* hviezdny šum */
-    body::before{
-      content:""; position:fixed; inset:0; z-index:-1;
-      background-image:
-        radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,.6) 40%, transparent 41%),
-        radial-gradient(1.5px 1.5px at 60% 70%, rgba(255,255,255,.45) 40%, transparent 41%),
-        radial-gradient(1.2px 1.2px at 80% 20%, rgba(255,255,255,.35) 40%, transparent 41%),
-        radial-gradient(1px 1px at 30% 80%, rgba(255,255,255,.25) 40%, transparent 41%);
-      opacity:.55; pointer-events:none;
-    }
+  .top-actions{display:flex;gap:10px;flex-wrap:wrap}
 
-    .container{
-      max-width:1080px; margin:24px auto; padding:16px;
-    }
+  .portals{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media (max-width:880px){.portals{grid-template-columns:1fr}}
+  .portal{position:relative;overflow:hidden;border-radius:20px;padding:16px;border:1px solid var(--glass);
+    background:rgba(8,12,30,.6);min-height:170px;display:flex;align-items:center;gap:18px;cursor:pointer;outline:none}
+  .portal[aria-disabled="true"]{opacity:.6;cursor:not-allowed}
+  .p-ring{position:absolute;inset:-20% -10% -20% auto;width:260px;height:260px;border-radius:50%;
+    filter:blur(24px) saturate(140%);animation:pulse 4.8s ease-in-out infinite;opacity:.8}
+  @keyframes pulse{0%,100%{transform:scale(1);opacity:.75}50%{transform:scale(1.07);opacity:1}}
+  .portal .info{position:relative;z-index:1}
+  .portal h3{margin:0 0 6px;font-size:1.35rem}
+  .k-label{font-size:.98rem;opacity:.96;font-weight:800}
+  .status-badge{margin-top:10px;display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;font-size:.88rem;font-weight:900;
+    background:linear-gradient(90deg,#cfe9ff,#f7fbff);color:#1c2633; box-shadow:0 2px 12px rgba(0,0,0,.18)}
+  .status-badge.done{background:linear-gradient(90deg,#a0ffcf,#72d2ff);color:#09201f;box-shadow:0 2px 12px rgba(0,0,0,.2)}
+  .lock{position:absolute;top:12px;right:12px;z-index:1;font-weight:900;padding:6px 8px;border-radius:10px;font-size:.8rem;
+    color:#061019;background:linear-gradient(90deg,#ffc1c1,#ff9aa9);display:none}
+  .portal.done .lock{display:block}
 
-    .card{
-      background:var(--card);
-      border:1px solid var(--glass-border);
-      border-radius:var(--radius);
-      backdrop-filter: blur(10px) saturate(115%);
-      -webkit-backdrop-filter: blur(10px) saturate(115%);
-      box-shadow:var(--shadow);
-      overflow:hidden;
-    }
+  .ring-bio{background:radial-gradient(closest-side,rgba(92,255,148,.4),transparent 60%),conic-gradient(#39f79c,#39c5f7,#39f79c)}
+  .ring-fyz{background:radial-gradient(closest-side,rgba(114,210,255,.35),transparent 60%),conic-gradient(#67a8ff,#7fd2ff,#67a8ff)}
+  .ring-che{background:radial-gradient(closest-side,rgba(183,146,255,.35),transparent 60%),conic-gradient(#b792ff,#ff7ad9,#b792ff)}
 
-    header.app{
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-      padding:16px 20px; border-bottom:1px solid var(--glass-border);
-      background:
-        linear-gradient(90deg, rgba(114,210,255,.12), transparent 45%),
-        linear-gradient(270deg, rgba(255,122,217,.08), transparent 55%);
-    }
-    .brand{ display:flex; align-items:center; gap:12px }
-    .logo{
-      width:44px; height:44px; border-radius:14px; display:grid; place-items:center;
-      background: radial-gradient(circle at 30% 30%, #1bffb1, #2a6fff 70%);
-      box-shadow:0 0 22px rgba(114,210,255,.45), inset 0 0 22px rgba(92,255,148,.35);
-      color:#061019; font-weight:900;
-    }
-    .brand h1{ font-size:1.25rem; margin:0 }
-    .sub{ color:var(--muted); font-size:.9rem }
+  /* CHE portál centrovaný obsah */
+  #portal-che{justify-content:center}
+  #portal-che .info{text-align:center}
 
-    .sources-btn{
-      position:fixed; top:18px; right:18px; z-index:5;
-      border:1px solid var(--glass-border); background: rgba(10,14,34,.6);
-      color:var(--text); border-radius:999px; padding:10px 14px; cursor:pointer;
-      font-weight:700;
-      box-shadow: 0 8px 24px rgba(0,0,0,.35);
-    }
-    .sources-btn:hover{ transform: translateY(-1px) }
+  .progress-panel{margin-top:8px;padding:14px;border-radius:16px;border:1px solid var(--glass);background:rgba(10,14,34,.55);display:grid;gap:6px;font-size:.98rem}
 
-    main{ padding:20px }
+  /* Screens */
+  .screen{display:none} .screen.active{display:block}
 
-    /* ============ HOME obrazovka ============ */
-    .home{
-      display:grid; gap:18px;
-    }
+  /* Quiz */
+  .qwrap{display:grid;gap:18px}
+  .qhead{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+  .qtitle{font-size:1.35rem;font-weight:900;line-height:1.35;letter-spacing:.2px;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.35)}
+  .meter{height:12px;border-radius:999px;background:rgba(255,255,255,.08);box-shadow:inset 0 1px 2px rgba(0,0,0,.25);overflow:hidden}
+  .meter .fill{height:100%;width:0%;background:linear-gradient(90deg,#72d2ff,#5cff94);box-shadow:0 0 18px rgba(114,210,255,.35);transition:width .35s ease}
+  .step{font-size:.95rem;color:var(--muted)}
+  .answers{display:grid;gap:12px}
+  .answers.two{grid-template-columns:1fr 1fr}
+  @media (max-width:560px){.answers.two{grid-template-columns:1fr}}
+  .opt{text-align:left;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.1);background:#0e1536;cursor:pointer;position:relative;overflow:hidden;
+    display:flex;align-items:center;justify-content:flex-start;color:#fff}
+  .opt:focus{outline:2px solid var(--cyan)}
+  .opt span.key{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:8px;margin-right:12px;font-weight:900;color:#061019;background:linear-gradient(180deg,#e7f6ff,#72d2ff)}
+  .opt.big{padding:22px 20px;text-align:center;font-size:1.25rem;justify-content:center;font-weight:900}
+  .answers.two .opt.big:first-child{background:linear-gradient(180deg,#0c2a1b,#0b1f17);border:2px solid rgba(92,255,148,.35)}
+  .answers.two .opt.big:last-child{background:linear-gradient(180deg,#2a0c12,#1a0b14);border:2px solid rgba(255,107,107,.35)}
+  .answers.two .opt.big span.key{display:none}
+  .opt.correct{border-color:rgba(92,255,148,.9)!important;box-shadow:0 0 0 3px rgba(92,255,148,.25),0 0 22px rgba(92,255,148,.25)}
+  .opt.wrong{border-color:rgba(255,91,91,.9)!important;box-shadow:0 0 0 3px rgba(255,91,91,.2),0 0 22px rgba(255,91,91,.2)}
+  .opt.correct::after,.opt.wrong::after{content:attr(data-tag);position:absolute;right:10px;top:10px;font-size:.8rem;font-weight:900;padding:4px 8px;border-radius:999px;color:#061019}
+  .opt.correct::after{background:linear-gradient(90deg,#a0ffcf,#6cd2ff)} .opt.wrong::after{background:linear-gradient(90deg,#ffc1c1,#ff9aa9)}
+  .explain{display:none;margin-top:6px;padding:14px;border-radius:14px;background:rgba(114,210,255,.06);border:1px solid var(--glass)}
+  .explain.active{display:block}
+  .qfooter{display:flex;gap:10px;justify-content:space-between;align-items:center}
+  .score{color:var(--muted)}
 
-    .intro{
-      padding:18px; border-radius:18px;
-      background: linear-gradient(180deg, rgba(114,210,255,.06), rgba(255,122,217,.05));
-    }
+  /* Roll-up */
+  .rollup-btn{background:linear-gradient(90deg,var(--cyan),var(--pink));color:#061019;font-weight:700;padding:8px 12px;border:none;border-radius:10px;cursor:pointer;margin-top:10px}
+  .rollup-content{max-height:0;overflow:hidden;transition:max-height .4s ease}
+  .rollup-content.open{max-height:900px}
+  .rollup-content p,.rollup-content img,.rollup-content a{margin:8px 0;color:#fff}
+  .rollup-content img{max-width:100%;border-radius:12px}
+  .rollup-content a{color:var(--cyan);text-decoration:underline}
+  .src-list{margin:6px 0 0 18px;padding:0}
+  .src-list li{margin:4px 0}
 
-    .email-row{
-      display:flex; flex-wrap:wrap; gap:10px; align-items:center;
-    }
-    label[for=email]{ font-weight:700 }
-    input[type=email]{
-      flex:1 1 260px; min-width:220px;
-      padding:12px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.1);
-      background:#0c1335; color:var(--text); outline:none;
-      box-shadow: inset 0 0 0 1px rgba(114,210,255,.08);
-    }
-    .btn{
-      padding:12px 16px; border:none; border-radius:12px; font-weight:800; cursor:pointer; color:#061019;
-      background:linear-gradient(90deg, var(--cyan), #9be0ff);
-      box-shadow:0 10px 24px rgba(114,210,255,.35), inset 0 -2px 0 rgba(0,0,0,.25);
-      transition: transform .06s ease, box-shadow .2s;
-    }
-    .btn:hover{ transform: translateY(-1px) }
-    .btn.ghost{ background: transparent; color:var(--text); border:1px solid rgba(255,255,255,.18) }
-    .btn.small{ padding:8px 10px; font-size:.9rem }
+  /* Modals */
+  .modal{position:fixed;inset:0;background:rgba(2,4,12,.65);display:none;align-items:center;justify-content:center;padding:24px;z-index:10}
+  .modal.active{display:flex}
+  .modal .box{width:min(860px,100%);background:var(--card);border:1px solid var(--glass);border-radius:18px;box-shadow:var(--shadow);padding:18px;position:relative}
+  .modal .box h2{margin-top:6px}
+  .close-x{position:absolute;right:18px;top:18px;border:none;background:transparent;color:var(--text);font-weight:900;cursor:pointer}
 
-    /* Portály (3 kategórie) */
-    .portals{
-      display:grid; grid-template-columns: repeat(3, 1fr); gap:16px;
-    }
-    @media (max-width:880px){ .portals{ grid-template-columns:1fr } }
-    .portal{
-      position:relative; overflow:hidden; border-radius:20px; padding:16px;
-      border:1px solid var(--glass-border);
-      background: rgba(8,12,30,.6);
-      min-height:160px; display:flex; align-items:center; gap:18px;
-      cursor:pointer;
-      outline:none;
-    }
-    .portal[aria-disabled="true"]{ opacity:.6; cursor:not-allowed }
-    .p-ring{
-      position:absolute; inset: -20% -10% -20% auto; width:260px; height:260px; border-radius:50%;
-      filter: blur(24px) saturate(140%);
-      animation: pulse 4.8s ease-in-out infinite;
-      opacity:.8;
-    }
-    .portal .info{ position:relative; z-index:1 }
-    .portal h3{ margin:0 0 6px; font-size:1.35rem }
-    .k-label{ font-size:.9rem; opacity:.9 }
-    .status-badge{
-      margin-top:10px; display:inline-flex; align-items:center; gap:8px; padding:6px 10px;
-      border-radius:999px; font-size:.85rem; font-weight:800;
-      background:linear-gradient(90deg,#D1D9E6,#F1F4F8); color:#29303a;
-    }
-    .status-badge.done{ background:linear-gradient(90deg,#a0ffcf,#72d2ff); color:#0a1c1c }
-    .lock{
-      position:absolute; top:12px; right:12px; z-index:1;
-      font-weight:900; padding:6px 8px; border-radius:10px; font-size:.8rem;
-      color:#061019; background:linear-gradient(90deg,#ffc1c1,#ff9aa9); display:none;
-    }
-    .portal.done .lock{ display:block }
-
-    @keyframes pulse{
-      0%,100%{ transform: scale(1); opacity:.75 }
-      50%{ transform: scale(1.07); opacity:1 }
-    }
-
-    /* farby portálov: BIO (green), FYZ (blue), CHE (purple) */
-    .ring-bio{ background: radial-gradient(closest-side, rgba(92,255,148,.4), transparent 60%), conic-gradient(#39f79c, #39c5f7, #39f79c) }
-    .ring-fyz{ background: radial-gradient(closest-side, rgba(114,210,255,.35), transparent 60%), conic-gradient(#67a8ff, #7fd2ff, #67a8ff) }
-    .ring-che{ background: radial-gradient(closest-side, rgba(183,146,255,.35), transparent 60%), conic-gradient(#b792ff, #ff7ad9, #b792ff) }
-
-    /* Panel priebehu pre zadaný e‑mail */
-    .progress-panel{
-      margin-top:8px; padding:14px; border-radius:16px; border:1px solid var(--glass-border);
-      background: rgba(10,14,34,.55);
-      display:grid; gap:6px; font-size:.98rem;
-    }
-
-    /* ============ KVÍZ obrazovka ============ */
-    .screen{ display:none }
-    .screen.active{ display:block }
-
-    .qwrap{ display:grid; gap:18px }
-    .qhead{ display:flex; align-items:flex-end; justify-content:space-between; gap:10px }
-    .qtitle{
-      font-size:1.35rem; font-weight:900; line-height:1.35; letter-spacing:.2px;
-      color:#fff; text-shadow:0 2px 8px rgba(0,0,0,.35);
-    }
-    .meter{
-      height:12px; border-radius:999px; background:rgba(255,255,255,.08);
-      box-shadow: inset 0 1px 2px rgba(0,0,0,.25); overflow:hidden;
-    }
-    .meter .fill{
-      height:100%; width:0%;
-      background: linear-gradient(90deg, #72d2ff, #5cff94);
-      box-shadow: 0 0 18px rgba(114,210,255,.35);
-      transition: width .35s ease;
-    }
-    .step{
-      font-size:.95rem; color:var(--muted)
-    }
-
-    .answers{ display:grid; gap:12px }
-    .answers.two{ grid-template-columns:1fr 1fr; }
-    @media (max-width:560px){ .answers.two{ grid-template-columns:1fr } }
-
-    .opt{
-      text-align:left; padding:14px; border-radius:14px; border:1px solid rgba(255,255,255,.1);
-      background:#0e1536; cursor:pointer; position:relative; overflow:hidden; display:flex; align-items:center; justify-content:flex-start;
-      color:#fff; /* čitateľný biely text */
-    }
-    .opt:focus{ outline:2px solid var(--cyan) }
-    .opt span.key{
-      display:inline-grid; place-items:center; width:28px; height:28px; border-radius:8px; margin-right:12px; font-weight:900; color:#061019;
-      background:linear-gradient(180deg,#e7f6ff,#72d2ff)
-    }
-    .opt.big{ padding:22px 20px; text-align:center; font-size:1.25rem; justify-content:center; font-weight:900 }
-    /* ÁNO/NIE – dve veľké tlačidlá s implicitnými odtieňmi */
-    .answers.two .opt.big:first-child{ background:linear-gradient(180deg,#0c2a1b,#0b1f17); border:2px solid rgba(92,255,148,.35) }
-    .answers.two .opt.big:last-child{  background:linear-gradient(180deg,#2a0c12,#1a0b14); border:2px solid rgba(255,107,107,.35) }
-    .answers.two .opt.big span.key{ display:none } /* žiadny malý štítok pri ÁNO/NIE */
-
-    .opt.correct{ border-color: rgba(92,255,148,.9) !important; box-shadow:0 0 0 3px rgba(92,255,148,.25), 0 0 22px rgba(92,255,148,.25) }
-    .opt.wrong{   border-color: rgba(255,91,91,.9) !important;  box-shadow:0 0 0 3px rgba(255,91,91,.2), 0 0 22px rgba(255,91,91,.2) }
-    .opt.correct::after, .opt.wrong::after{
-      content: attr(data-tag); position:absolute; right:10px; top:10px;
-      font-size:.8rem; font-weight:900; padding:4px 8px; border-radius:999px; color:#061019;
-    }
-    .opt.correct::after{ background:linear-gradient(90deg,#a0ffcf,#6cd2ff) }
-    .opt.wrong::after{   background:linear-gradient(90deg,#ffc1c1,#ff9aa9) }
-
-    .explain{
-      display:none; margin-top:6px; padding:14px; border-radius:14px; background:rgba(114,210,255,.06);
-      border:1px solid var(--glass-border);
-    }
-    .explain.active{ display:block }
-
-    .qfooter{ display:flex; gap:10px; justify-content:space-between; align-items:center }
-    .score{ color:var(--muted) }
-
-    /* ============ MODÁLY (intro + výsledok + zdroje) ============ */
-    .modal{
-      position:fixed; inset:0; background:rgba(2,4,12,.65);
-      display:none; align-items:center; justify-content:center; padding:24px; z-index:10;
-    }
-    .modal.active{ display:flex }
-    .modal .box{
-      width:min(720px, 100%); background:var(--card); border:1px solid var(--glass-border);
-      border-radius:18px; box-shadow:var(--shadow); padding:18px;
-    }
-    .modal .box h2{ margin-top:6px }
-    .close-x{ position:absolute; right:18px; top:18px; border:none; background:transparent; color:var(--text); font-weight:900; cursor:pointer }
-
-    .tier{ display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; font-weight:800; background:linear-gradient(90deg,#FFD166,#FFE29A); color:#432d00 }
-    .silver{ background:linear-gradient(90deg,#D1D9E6,#F1F4F8); color:#2a323d }
-    .gold{   background:linear-gradient(90deg,#F6C866,#FBE6A2); color:#4a3200 }
-
-    /* Sociálne siete v rohu */
-    .social{
-      position:fixed; left:18px; bottom:18px; z-index:5; display:flex; gap:8px
-    }
-    .soc-btn{
-      width:40px; height:40px; border-radius:12px; border:1px solid var(--glass-border);
-      background: rgba(10,14,34,.6); color:var(--text); font-weight:900; display:grid; place-items:center; cursor:pointer;
-    }
-
-    /* Prefer reduced motion */
-    @media (prefers-reduced-motion: reduce){
-      .p-ring{ animation:none }
-      .btn:hover{ transform:none }
-    }
-
-    /* SR-only helper */
-    .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0 }
-  </style>
+  /* Socials (ikony z obrázkov) */
+  .social{position:fixed;left:18px;bottom:18px;z-index:5;display:flex;gap:10px;align-items:center}
+  .social a{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;border:1px solid var(--glass);background:rgba(10,14,34,.6);text-decoration:none;color:var(--text);font-weight:800}
+  .social img{width:20px;height:20px;display:inline-block}
+  @media (prefers-reduced-motion:reduce){.p-ring{animation:none}.btn:hover{transform:none}}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+</style>
 </head>
 <body>
-  <!-- Bočné tlačidlo ZDROJE -->
-  <button class="sources-btn" id="btnSources" aria-haspopup="dialog" aria-controls="modalSources">Zdroje</button>
-
   <div class="container">
-    <div class="card" role="application" aria-label="Veda v kocke – tri kvízy">
+    <div class="card" role="application" aria-label="VEDA V KOCKE – tri kvízy">
       <header class="app">
         <div class="brand">
-          <div class="logo" aria-hidden="true">VVK</div>
+          <img src="VVK Logo - transparent.png" alt="Logo VEDA V KOCKE" class="logo-img">
           <div>
-            <h1>Veda v kocke</h1>
-            <div class="sub">Tri portály poznania — <strong>Biológia</strong>, <strong>Fyzika</strong>, <strong>Chémia</strong></div>
+            <h1>VEDA V KOCKE</h1>
+            <div class="claim">Prebudiť svoju <strong>#zvedavosť</strong></div>
           </div>
         </div>
-        <div class="sub">Zadaj e‑mail, odomkni portály, sprav každý kvíz len raz.</div>
+        <div class="top-actions">
+          <button class="btn" id="btnRewards">Čo si vieš vyzdvihnúť?</button>
+          <button class="btn ghost" id="btnIntro">Info o kvízoch</button>
+        </div>
       </header>
 
       <main>
-        <!-- ================= HOME (portály + e‑mail + panel progresu) ================= -->
+        <!-- HOME -->
         <section class="home screen active" id="screen-home">
           <div class="intro">
-            <p style="margin:0 0 10px">Použi <strong>ten istý e‑mail</strong> pre všetky tri kvízy. Výsledky sa k nemu priradia a portály sa podľa toho rozsvietia.</p>
+            <p style="margin:0 0 10px">Použi <strong>ten istý e-mail</strong> pre všetky tri kvízy. Výsledky sa k nemu priradia a portály sa podľa toho rozsvietia.</p>
             <div class="email-row">
-              <label for="email">E‑mail</label>
+              <label for="email">E-mail</label>
               <input id="email" name="email" type="email" inputmode="email" placeholder="tvoj@email.sk" autocomplete="email" required />
-              <button class="btn" id="btnUseEmail">Použiť e‑mail</button>
-              <button class="btn ghost small" id="btnSignOut" title="Odhlásiť aktuálny e‑mail" aria-label="Odhlásiť">Odhlásiť</button>
+              <button class="btn" id="btnUseEmail">Použiť e-mail</button>
+              <button class="btn ghost small" id="btnSignOut" title="Odhlásiť aktuálny e-mail" aria-label="Odhlásiť">Odhlásiť</button>
             </div>
           </div>
 
           <div class="portals" role="list">
-            <!-- Biológia -->
             <button class="portal" id="portal-bio" role="listitem" aria-disabled="true">
               <div class="p-ring ring-bio" aria-hidden="true"></div>
               <div class="lock">HOTOVO 🔒</div>
               <div class="info">
                 <h3>Biológia</h3>
-                <div class="k-label">Živá príroda, parazity, telo, správanie</div>
-                <div class="status-badge" id="badge-bio">Neodo mknuté</div>
+                <div class="k-label">Spoznaj najzvláštnejších živočíchov</div>
+                <div class="status-badge" id="badge-bio">Neodomknuté</div>
               </div>
             </button>
 
-            <!-- Fyzika -->
             <button class="portal" id="portal-fyz" role="listitem" aria-disabled="true">
               <div class="p-ring ring-fyz" aria-hidden="true"></div>
               <div class="lock">HOTOVO 🔒</div>
               <div class="info">
                 <h3>Fyzika</h3>
-                <div class="k-label">Zvuk, teplo, svetlo, príbehy géniov</div>
-                <div class="status-badge" id="badge-fyz">Neodo mknuté</div>
+                <div class="k-label">Preskúmaj čaro každodenných javov</div>
+                <div class="status-badge" id="badge-fyz">Neodomknuté</div>
               </div>
             </button>
 
-            <!-- Chémia -->
             <button class="portal" id="portal-che" role="listitem" aria-disabled="true">
               <div class="p-ring ring-che" aria-hidden="true"></div>
               <div class="lock">HOTOVO 🔒</div>
               <div class="info">
                 <h3>Chémia</h3>
-                <div class="k-label">Látky, molekuly, vône, lieky</div>
-                <div class="status-badge" id="badge-che">Neodo mknuté</div>
+                <div class="k-label">Objav fascinujúce látky</div>
+                <div class="status-badge" id="badge-che">Neodomknuté</div>
               </div>
             </button>
           </div>
@@ -351,17 +213,18 @@
           </div>
         </section>
 
-        <!-- ================= KVÍZ (dynamický podľa kategórie) ================= -->
+        <!-- QUIZ -->
         <section class="screen" id="screen-quiz" aria-live="polite">
           <div class="qwrap">
             <div class="qhead">
               <div class="qtitle" id="qTitle"></div>
-              <div class="step" id="qStep">Otázka 1/6 • 0%</div>
+              <div class="step" id="qStep">Otázka 1/5 • 0%</div>
             </div>
             <div class="meter" aria-hidden="true"><div class="fill" id="meterFill"></div></div>
             <div class="answers" id="answers" role="list"></div>
+
             <div class="explain" id="explain">
-              <div id="explainText"></div>
+              <!-- sem sa vloží roll-up + footer -->
               <div class="qfooter">
                 <div class="score" id="scoreText">Skóre: 0</div>
                 <button class="btn" id="btnNext">Ďalšia otázka</button>
@@ -373,565 +236,474 @@
     </div>
   </div>
 
-  <!-- ================== MODÁL: Úvodné upozornenie ================== -->
+  <!-- MODAL: Intro -->
   <div class="modal" id="modalIntro" role="dialog" aria-modal="true" aria-labelledby="introTitle">
     <div class="box">
       <button class="close-x" data-close="#modalIntro" aria-label="Zavrieť">✕</button>
-      <h2 id="introTitle">Vitaj v dimenzii vedy ✨</h2>
-      <p>Čakajú ťa <strong>3 kvízy</strong>: Biológia, Fyzika, Chémia (každý po 6 otázok). Pred spustením zadaj <strong>ten istý e‑mail</strong>, aby sme vedeli, ktoré kvízy máš hotové — a vedeli odmeniť tvoju snahu.</p>
+      <h2 id="introTitle">Ako to funguje ✨</h2>
+      <p>Čakajú ťa <strong>3 kvízy</strong>: Biológia, Fyzika, Chémia (každý po 5 otázok). Pred spustením zadaj <strong>ten istý e-mail</strong>, aby sme vedeli, čo máš hotové — a vedeli odmeniť tvoju snahu.</p>
       <ul>
-        <li>Každý kvíz môžeš urobiť <strong>len raz</strong> pre daný e‑mail.</li>
-        <li>Po odpovedi hneď uvidíš, či bola správna + krátke vysvetlenie.</li>
-        <li>Na hlavnej stránke portály žiaria podľa tvojej práce (hotové vs. čakajúce).</li>
+        <li>Každý kvíz môžeš urobiť <strong>len raz</strong> pre daný e-mail.</li>
+        <li>Po odpovedi klikni na <em>Vysvetlenie</em> — rozbalí sa dlhší text a zdroje ku konkrétnej otázke.</li>
       </ul>
-      <div style="display:flex; gap:10px; justify-content:flex-end">
+      <div style="display:flex;gap:10px;justify-content:flex-end">
         <button class="btn ghost" data-close="#modalIntro">Rozumiem</button>
       </div>
     </div>
   </div>
 
-  <!-- ================== MODÁL: Výsledok ================== -->
+  <!-- MODAL: Rewards poster -->
+  <div class="modal" id="modalRewards" role="dialog" aria-modal="true" aria-labelledby="rewardsTitle">
+    <div class="box">
+      <button class="close-x" data-close="#modalRewards" aria-label="Zavrieť">✕</button>
+      <h2 id="rewardsTitle">Odmeny</h2>
+      <img src="rewards-poster.png" alt="Zapoj sa do kvízov a vyhraj nadupané ceny — odmeny podľa počtu spravených kvízov" style="width:100%;border-radius:14px">
+    </div>
+  </div>
+
+  <!-- MODAL: Result (bez úrovní) -->
   <div class="modal" id="modalResult" role="dialog" aria-modal="true" aria-labelledby="resTitle">
     <div class="box">
       <button class="close-x" data-close="#modalResult" aria-label="Zavrieť">✕</button>
       <h2 id="resTitle">Hotovo! 🎉</h2>
-      <p>Získal/a si <strong id="finalScore"></strong> bodov z <strong id="totalQ"></strong> (<span id="pct"></span>).</p>
-      <div id="tierBadge" class="tier">Bronzová úroveň</div>
-      <p id="tierText">Skús ešte raz… (ale iba s iným e‑mailom 😉).</p>
-      <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:10px">
+      <p>Získali ste <strong id="finalScore"></strong> bodov z <strong id="totalQ"></strong> (<span id="pct"></span>).</p>
+      <p style="font-weight:700">Gratulujeme, kvíz máte spravený! Príďte si na stanovište vyzdvihnúť odmenu.</p>
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:10px">
         <button class="btn" id="btnBackHome">Naspäť na hlavnú stránku</button>
       </div>
     </div>
   </div>
 
-  <!-- ================== MODÁL: Zdroje ================== -->
-  <div class="modal" id="modalSources" role="dialog" aria-modal="true" aria-labelledby="srcTitle">
-    <div class="box">
-      <button class="close-x" data-close="#modalSources" aria-label="Zavrieť">✕</button>
-      <h2 id="srcTitle">Zdroje k faktom</h2>
-      <ul style="line-height:1.6">
-        <li><a href="https://aurelstodola.sk/vztah-s-einsteinom/" target="_blank" rel="noopener">aurelstodola.sk — vzťah s Einsteinom</a></li>
-        <li><a href="https://www.startitup.sk/einstein-ho-oznacil-za-genia-pribeh-slovaka-ktoreho-o-nazor-prosil-i-najznamejsi-fyzik-sveta/" target="_blank" rel="noopener">Startitup — Einstein &amp; Stodola</a></li>
-        <li><a href="https://pubmed.ncbi.nlm.nih.gov/14749516/" target="_blank" rel="noopener">PubMed — green leaf volatiles</a></li>
-        <li><a href="https://www.the-scientist.com/designer-microbes-make-painkillers-from-plastic-waste-73110" target="_blank" rel="noopener">The Scientist — mikróby &gt; lieky</a></li>
-        <li><a href="https://www.nature.com/articles/s41557-025-01845-5" target="_blank" rel="noopener">Nature — chemická konverzia plastu</a></li>
-        <li><a href="https://doi.org/10.1073/pnas.0308037100" target="_blank" rel="noopener">PNAS — psilocybín a terapia</a></li>
-        <li><a href="https://www.sciencefocus.com/science/how-many-bananas-would-i-need-to-eat-to-become-radioactive" target="_blank" rel="noopener">Science Focus — banány a rádioaktivita</a></li>
-        <li><a href="https://www.aktuality.sk/clanok/712624/zenu-uhryzol-najjedovatejsi-pavuk-na-slovensku/" target="_blank" rel="noopener">Aktuality.sk — pradiarka pestrá</a></li>
-        <li><a href="https://www.sav.sk/?lang=sk&doc=services-news&source_no=20&news_no=12555" target="_blank" rel="noopener">SAV — pavúky na Slovensku</a></li>
-        <li><a href="https://bionumbers.hms.harvard.edu/bionumber.aspx?s=n&v=5&id=111126" target="_blank" rel="noopener">BioNumbers — plocha tenkého čreva</a></li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- Sociálne siete (placeholder odkazy) -->
+  <!-- Socials s tvojimi ikonami -->
   <div class="social" aria-label="Sociálne siete">
-    <a class="soc-btn" href="https://www.instagram.com" target="_blank" rel="noopener" aria-label="Instagram">IG</a>
-    <a class="soc-btn" href="https://www.tiktok.com" target="_blank" rel="noopener" aria-label="TikTok">TT</a>
-    <a class="soc-btn" href="https://www.youtube.com" target="_blank" rel="noopener" aria-label="YouTube">YT</a>
+    <a href="https://www.instagram.com/veda_vkocke" target="_blank" rel="noopener" aria-label="Instagram veda_vkocke">
+      <img src="download.png" alt=""> @veda_vkocke
+    </a>
+    <a href="https://www.tiktok.com/@VEDAVKOCKE" target="_blank" rel="noopener" aria-label="TikTok VEDAVKOCKE">
+      <img src="download (1).png" alt=""> @VEDAVKOCKE
+    </a>
   </div>
 
-  <script>
-    /* ================================================================
-       ÚLOŽISKO / “AUTH”
-       - localStorage ako jednoduchý per‑device register e‑mailov a výsledkov
-       - štruktúra: vvk_registry = { [email]: { quizzes: { bio|fyz|che: {score,total,ts} } } }
-       - vvk_current_email = posledný použitý e‑mail (pre UX)
-       - Každý kvíz pre ten istý e‑mail len raz (blokovanie retake).
-       ================================================================ */
+<!-- (Nepovinné) Firebase SDK – funguje aj bez neho -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
-    const KEY_REG = 'vvk_registry';
-    const KEY_CUR = 'vvk_current_email';
-
-    const $ = sel => document.querySelector(sel);
-    const $$ = sel => document.querySelectorAll(sel);
-
-    function loadRegistry(){
-      try{ return JSON.parse(localStorage.getItem(KEY_REG) || '{}'); }
-      catch{ return {}; }
+<script>
+/* ======= Firebase nastavenie (voliteľné) =======
+   1) nastav FIREBASE_ENABLED = true
+   2) vyplň firebaseConfig podľa tvojej app
+*/
+const FIREBASE_ENABLED = false; // ← prepni na true po doplnení configu
+const firebaseConfig = {
+  apiKey: "",
+  authDomain: "",
+  projectId: "",
+  // storageBucket: "", messagingSenderId: "", appId: ""
+};
+// bezpečné init – beží len keď je povolené a config je vyplnený
+let db=null;
+(function initFirebase(){
+  try{
+    if(FIREBASE_ENABLED && firebase && firebase.initializeApp && firebaseConfig.projectId){
+      const app=firebase.initializeApp(firebaseConfig);
+      db=firebase.firestore(app);
+      console.log('Firebase inicializované.');
     }
-    function saveRegistry(reg){ localStorage.setItem(KEY_REG, JSON.stringify(reg)); }
-    function getEmail(){ return localStorage.getItem(KEY_CUR) || ''; }
-    function setEmail(email){ localStorage.setItem(KEY_CUR, email); }
-    function signOut(){ localStorage.removeItem(KEY_CUR); }
+  }catch(e){ console.warn('Firebase nie je dostupný:', e); }
+})();
 
-    function claimEmail(email){
-      const reg = loadRegistry();
-      if(!reg[email]) reg[email] = { quizzes:{} };
-      saveRegistry(reg);
-      setEmail(email);
-      return reg[email];
+/* ================== Jednoduché úložisko / “auth” ================== */
+const KEY_REG='vvk_registry', KEY_CUR='vvk_current_email';
+const $=s=>document.querySelector(s);
+function loadRegistry(){try{return JSON.parse(localStorage.getItem(KEY_REG)||'{}')}catch{return{}}}
+function saveRegistry(r){localStorage.setItem(KEY_REG,JSON.stringify(r))}
+function getEmail(){return localStorage.getItem(KEY_CUR)||''}
+function setEmail(e){localStorage.setItem(KEY_CUR,e)}
+function signOut(){localStorage.removeItem(KEY_CUR)}
+function claimEmail(email){const reg=loadRegistry(); if(!reg[email]) reg[email]={quizzes:{}}; saveRegistry(reg); setEmail(email); return reg[email]}
+function getRecord(email){const reg=loadRegistry(); return reg[email]||null}
+function setResultLocal(email,cat,score,total){const reg=loadRegistry(); if(!reg[email]) reg[email]={quizzes:{}}; reg[email].quizzes[cat]={score,total,ts:Date.now()}; saveRegistry(reg)}
+
+/* ===== Backend háčiky (lokál + voliteľný Firestore) ===== */
+async function backendCheckEmailUnique(email){
+  // Firestore: email slúži ako ID dokumentu (unikát)
+  if(db){
+    const docRef=db.collection('vvk_users').doc(email);
+    const snap=await docRef.get();
+    if(!snap.exists){
+      await docRef.set({createdAt: firebase.firestore.FieldValue.serverTimestamp(), quizzes:{}});
     }
+    return {ok:true};
+  }
+  // fallback (čisto lokálne)
+  return {ok:true};
+}
 
-    function getRecord(email){
-      const reg = loadRegistry(); return reg[email] || null;
+async function backendGetServerQuizzes(email){
+  if(!db) return null;
+  const docRef=db.collection('vvk_users').doc(email);
+  const snap=await docRef.get();
+  return snap.exists ? (snap.data().quizzes || null) : null;
+}
+
+async function backendSaveResult({email,category,score,total}){
+  if(db){
+    const docRef=db.collection('vvk_users').doc(email);
+    return db.runTransaction(async (tx)=>{
+      const snap=await tx.get(docRef);
+      const data=snap.exists ? snap.data() : {quizzes:{}};
+      const qz=data.quizzes||{};
+      if(qz[category]){ return {ok:false, reason:'Tento kvíz je už pre tento e-mail dokončený (server).'} }
+      qz[category]={score,total,ts:firebase.firestore.FieldValue.serverTimestamp()};
+      tx.set(docRef,{quizzes:qz},{merge:true});
+      return {ok:true};
+    });
+  }
+  return {ok:true};
+}
+
+/* ================== DÁTA KVÍZOV — opravené formulácie ================== */
+const QUIZZES={
+  bio:{
+    name:'Biológia', portalId:'portal-bio', badgeId:'badge-bio', ringClass:'ring-bio',
+    questions:[
+      {type:'tf',
+       q:'Existuje huba, ktorá dokáže premeniť mravce na „zombies“ a ovplyvňovať ich správanie.',
+       options:['ÁNO','NIE'], correct:0,
+       ex:'<strong>Áno.</strong> <em>Ophiocordyceps unilateralis</em> prerastie telo mravca a chemicky mení jeho správanie. Mravec vylezie vysoko, huba z neho vyženie plodnicu a rozsieva spóry. Pre ľudí nie je nebezpečná.',
+       sources:[{label:'Review',url:'https://doi.org/10.1016/j.funbio.2011.04.008'}]},
+      {type:'mc',
+       q:'Čo sa ti stane, ak ťa uhryzne pradiarka pestrá (najjedovatejší pavúk v SR)?',
+       options:['nič, jed nemá účinok','silná bolesť až kŕče/paralýza','okamžitá smrť'],
+       correct:1,
+       ex:'Uhryznutie je zriedkavé, ale môže spôsobiť <strong>bolesť, kŕče až prechodnú paralýzu</strong>. Liečiteľné modernou medicínou.',
+       sources:[{label:'SAV',url:'https://www.sav.sk/?lang=sk&doc=services-news&source_no=20&news_no=12555'}]},
+      {type:'mc',
+       q:'Motolica podivná je druh parazita, ktorý napáda slimákov a vyskytuje sa aj na Slovensku. Čo im spôsobuje?',
+       options:[
+         'jej larvy sa dostanú do ich očí, kde pulzujú a lákajú predátorov',
+         'dostane sa do ich žalúdka a nechá ich explodovať',
+         'prenikne do mozgu a premení sa na kyselinu'
+       ],
+       correct:0,
+       ex:'Larvy sa po zjedení vajíčok dostanú <strong>do očných výbežkov</strong>, farebne pulzujú a robia slimáka ľahkou korisťou vtákov. Cyklus pokračuje cez vtáčí trus.',
+       sources:[{label:'Parasitology prehľad',url:'https://doi.org/10.1007/s00436-013-3393-6'}]},
+      {type:'mc',
+       q:'Sága stepná je najväčšou kobylkou na Slovensku, ktorá môže mať dĺžku až 12 cm. Čo je na nej ešte zaujímavé?',
+       options:['dokáže meniť farbu ako chameleón','korisť loví ostňami na nohách','je prudko jedovatá'],
+       correct:1,
+       ex:'Sága stepná je bezkrídla predátorská kobylka. Korisť <strong>pevne zviera ostňami</strong> na predných nohách; patrí medzi najväčší hmyz Európy.',
+       sources:[{label:'Dokumentárne zábery (hľadaj „Saga pedo“)',url:'https://www.youtube.com/results?search_query=Saga+pedo'}]},
+      {type:'mc',
+       q:'Ak by si rozprestrel povrch tenkého čreva, plocha by zodpovedala približne…',
+       options:['polovici bedmintonového kurtu','parkovaciemu miestu','futbalovej lopte'],
+       correct:0,
+       ex:'Vďaka klkom a mikroklkom je plocha tenkého čreva približne <strong>desiatky m²</strong> (často ~30 m²) — teda skoro polovica bedmintonového kurtu.',
+       sources:[{label:'BioNumbers',url:'https://bionumbers.hms.harvard.edu/bionumber.aspx?s=n&v=5&id=111126'}]},
+    ]
+  },
+
+  fyz:{
+    name:'Fyzika', portalId:'portal-fyz', badgeId:'badge-fyz', ringClass:'ring-fyz',
+    questions:[
+      {type:'mc',
+       q:'Na železnici môžeme počuť vlak prichádzať skôr — často vďaka „pískaniu“ bŕzd na koľajniciach — hoci ho ešte nevidíme. Prečo je tomu tak?',
+       options:[
+         'v skutočnosti „píska“ staničný rozhlas',
+         'zvuk sa šíri rýchlejšie v tuhých látkach ako vo vzduchu',
+         'vlak vysiela pred seba zvukový signál'
+       ],
+       correct:1,
+       ex:'V kovoch sú častice bližšie pri sebe, preto sa mechanické kmity (zvuk) prenášajú <strong>rýchlejšie</strong> než vo vzduchu. Brzdenie „počuť“ cez koľajnice skôr, než vlak dorazí.',
+       sources:[{label:'Rýchlosť zvuku',url:'https://en.wikipedia.org/wiki/Speed_of_sound'}]},
+      {type:'tf',
+       q:'Farby v skutočnosti neexistujú. Všetko je to len hra tvojho mozgu.',
+       options:['ÁNO','NIE'],
+       correct:0,
+       ex:'Svetlo má vlnovú dĺžku a frekvenciu; <strong>farba je vnem</strong> vytvorený zrakom a mozgom pri spracovaní signálu.',
+       sources:[{label:'Kolorimetria – prehľad',url:'https://en.wikipedia.org/wiki/Color'}]},
+      {type:'mc',
+       q:'Ako vie kanvica, kedy je voda pripravená na čaj alebo kávu?',
+       options:[
+         '„počúva“ bublinky a keď ich je dosť, vypne sa',
+         'má v sebe teplomer s AI',
+         'obsahuje bimetalový pásik, ktorý sa ohnutím vypne'
+       ],
+       correct:2,
+       ex:'V kanvici je <strong>bimetal</strong> (dva kovy s odlišnou rozťažnosťou). Pri zahriatí sa ohne a mechanicky rozpojí kontakt.',
+       sources:[{label:'Thermostat & bimetal',url:'https://en.wikipedia.org/wiki/Thermostat#Bimetallic_strip'}]},
+      {type:'mc',
+       q:'Cukrárka má na sebe zlatú retiazku, bavlnenú ozdobu vo vlasoch a plastovú náušnicu. Keď vkladá koláč do rúry, zostáva nahnutá nad rozohriatou rúrou. Aké riziko jej hrozí?',
+       options:[
+         'zlatá retiazka ju popáli (vysoká tepelná vodivosť)',
+         'látková ozdoba môže vzbĺknuť',
+         'plastová náušnica sa roztopí a prilepí'
+       ],
+       correct:0,
+       ex:'Kovy (napr. <strong>zlato</strong>) výborne vedú teplo → ľahko sa rozpália a môžu popáliť. Krátke nahnutie nad rúru spravidla nestačí na vzplanutie látky či roztavenie plastu.',
+       sources:[{label:'Tepelná vodivosť',url:'https://en.wikipedia.org/wiki/Thermal_conductivity'}]},
+      {type:'tf',
+       q:'Slovenský fyzik Aurel Stodola bol obdivovaný aj samotným Einsteinom.',
+       options:['ÁNO','NIE'],
+       correct:0,
+       ex:'Stodola (parné stroje a turbíny) pôsobil v Zürichu a s Einsteinom mal blízky kontakt a rešpekt.',
+       sources:[
+         {label:'AurelStodola.sk',url:'https://aurelstodola.sk/vztah-s-einsteinom/'},
+         {label:'Startitup',url:'https://www.startitup.sk/einstein-ho-oznacil-za-genia-pribeh-slovaka-ktoreho-o-nazor-prosil-i-najznamejsi-fyzik-sveta/'}
+       ]},
+    ]
+  },
+
+  che:{
+    name:'Chémia', portalId:'portal-che', badgeId:'badge-che', ringClass:'ring-che',
+    questions:[
+      {type:'tf',
+       q:'Vôňa pokosenej trávy je v skutočnosti varovný signál, ktorý upozorňuje ďalšie rastliny o blížiacom sa nebezpečenstve.',
+       options:['ÁNO','NIE'], correct:0,
+       ex:'Pri poškodení listov sa uvoľňujú tzv. <strong>green leaf volatiles</strong>, ktoré pripravujú okolie na stres/útok.',
+       sources:[{label:'PubMed',url:'https://pubmed.ncbi.nlm.nih.gov/14749516/'}]},
+      {type:'tf',
+       q:'Kofeín v káve funguje tak, že ti dodá viac energie.',
+       options:['ÁNO','NIE'], correct:1,
+       ex:'Kofeín <strong>neprodukuje energiu</strong> — blokuje adenozínové receptory (signály únavy) a mení vnímanie.',
+       sources:[{label:'Healthline',url:'https://www.healthline.com/nutrition/top-evidence-based-health-benefits-of-coffee'}]},
+      {type:'mc',
+       q:'Vedci vyvinuli mikróby, ktoré dokážu premeniť zložky  PET plastu na:',
+       options:['Čiernu dieru','Účinný paracetamol','Železnú rudu'],
+       correct:1,
+       ex:'Syntetická biológia umožnila pretvoriť rozkladné produkty PET na <strong>paracetamol</strong> — príklad cirkulárnej chémie.',
+       sources:[
+         {label:'The Scientist',url:'https://www.the-scientist.com/designer-microbes-make-painkillers-from-plastic-waste-73110'},
+         {label:'Nature',url:'https://www.nature.com/articles/s41557-025-01845-5'}
+       ]},
+      {type:'mc',
+       q:'Existujú huby, ktoré nám dokážu spôsobiť halucinácie — tzv. halucinogénne. Vedci začali skúmať ich možné lekárske využitie. Aké?',
+       options:['Zlepšujú komunikáciu','Pomáhajú pri liečení úzkosti a depresie','Zlepšujú orientáciu v priestore'],
+       correct:1,
+       ex:'V kontrolovanom prostredí môže psilocybín zlepšovať symptómy <strong>depresie/úzkosti</strong>; prebiehajú klinické štúdie.',
+       sources:[{label:'PNAS',url:'https://doi.org/10.1073/pnas.0308037100'}]},
+      {type:'mc',
+       q:'Banány obsahujú malé množstvo istého prvku, vďaka ktorému sú…',
+       options:['účinné pri liečení zlomenín','doslova rádioaktívne','žlté'],
+       correct:1,
+       ex:'Obsahujú izotop <strong>K-40</strong>; dávka je extrémne nízka a neškodná.',
+       sources:[{label:'Science Focus',url:'https://www.sciencefocus.com/science/how-many-bananas-would-i-need-to-eat-to-become-radioactive'}]},
+    ]
+  }
+};
+
+/* ================== UI prepojenie ================== */
+const elHome=$('#screen-home'), elQuiz=$('#screen-quiz');
+const elTitle=$('#qTitle'), elStep=$('#qStep'), elMeter=$('#meterFill');
+const elAns=$('#answers'), elExpl=$('#explain'), elScore=$('#scoreText');
+const elEmail=$('#email'), elUse=$('#btnUseEmail'), elOut=$('#btnSignOut');
+const elPortBio=$('#portal-bio'), elPortFyz=$('#portal-fyz'), elPortChe=$('#portal-che');
+const elBadgeBio=$('#badge-bio'), elBadgeFyz=$('#badge-fyz'), elBadgeChe=$('#badge-che');
+const elPanelWho=$('#whoEmail'), elProgList=$('#progressList');
+const modalIntro=$('#modalIntro'), modalResult=$('#modalResult'), modalRewards=$('#modalRewards');
+const btnBackHome=$('#btnBackHome'); const btnRewards=$('#btnRewards'), btnIntro=$('#btnIntro');
+
+let session={email:'',cat:'',idx:0,score:0,answered:false,list:[]};
+
+function showScreen(which){[elHome,elQuiz].forEach(s=>s.classList.remove('active')); if(which==='home')elHome.classList.add('active'); if(which==='quiz')elQuiz.classList.add('active')}
+function openModal(m){m.classList.add('active')}
+function closeModal(m){m.classList.remove('active')}
+
+async function useEmail(){
+  const email=elEmail.value.trim().toLowerCase();
+  const ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if(!ok){alert('Zadaj platný e-mail.');return}
+  const chk=await backendCheckEmailUnique(email);
+  if(chk && chk.ok){ claimEmail(email); session.email=email; renderHome(); }
+  else{ alert(chk?.reason || 'Tento e-mail nemôže byť použitý.'); }
+}
+function renderHome(){
+  const email=getEmail(); session.email=email||''; elPanelWho.textContent=email||'—'; elEmail.value=email||'';
+  const rec=email?getRecord(email):null;
+  const setPortal=(btn,badge,cat)=>{
+    const done=!!rec?.quizzes?.[cat];
+    btn.setAttribute('aria-disabled',!email?'true':'false');
+    btn.classList.toggle('done',!!done);
+    badge.textContent=!email?'Neodomknuté':(done?`Hotovo: ${rec.quizzes[cat].score}/${rec.quizzes[cat].total}`:'Pripravené');
+    badge.classList.toggle('done',!!done);
+  };
+  setPortal(elPortBio,elBadgeBio,'bio');
+  setPortal(elPortFyz,elBadgeFyz,'fyz');
+  setPortal(elPortChe,elBadgeChe,'che');
+
+  if(!email){elProgList.textContent='Zatiaľ nič nevyplnené. Odomkni portál a začni!'}
+  else if(!rec || !rec.quizzes || Object.keys(rec.quizzes).length===0){elProgList.textContent='Žiadne dokončené kvízy. Vyber si portál!'}
+  else{
+    const lines=['Prehľad:'];
+    for(const k of ['bio','fyz','che']){
+      const r=rec.quizzes[k];
+      lines.push(`${QUIZZES[k].name}: ${r?(r.score+'/'+r.total):'—'}`);
     }
-    function setResult(email, cat, score, total){
-      const reg = loadRegistry();
-      if(!reg[email]) reg[email] = { quizzes:{} };
-      reg[email].quizzes[cat] = { score, total, ts: Date.now() };
-      saveRegistry(reg);
-    }
-
-    /* ================================================================
-       BACKEND HÁČIKY — voliteľná integrácia (napr. Firebase)
-       >>>>>>>>> === TU BUDEM VKLADAŤ SVOJ KÓD NA PRÁCU S E‑MAILOM === <<<<<<<<<
-       Sem vieš doplniť:
-         - globálnu kontrolu jedinečnosti e‑mailu (centrálne)
-         - ukladanie výsledkov do cloudu
-       Predvolene sú to "no‑op" funkcie, ktoré sľub splnia, ale nič nerobia.
-       ================================================================ */
-    async function backendCheckEmailUnique(email){
-      // TODO: over na servery, či e‑mail ešte nebol použitý (globálne).
-      // return { ok:true } alebo { ok:false, reason:'...' }
-      return { ok:true };
-    }
-    async function backendSaveResult({ email, category, score, total }){
-      // TODO: uložiť na server / db
-      return { ok:true };
-    }
-
-    /* ================================================================
-       DÁTA KVÍZOV
-       Každá kategória: presne 6 otázok (typ 'tf' = ÁNO/NIE, 'mc' = výber)
-       >>>>>>>>> === TU BUDEM VKLADAŤ OTÁZKY (možno upravovať) === <<<<<<<<<
-       Vopred som doplnil tvoje otázky (5+5+5) a pridal po 1, aby každá mala 6.
-       Texty sú skrátené tak, aby vysvetlenie bolo stručné; zdroje sú v modáli.
-       ================================================================ */
-    const QUIZZES = {
-      bio: {
-        name: 'Biológia',
-        portalId: 'portal-bio',
-        badgeId: 'badge-bio',
-        ringClass: 'ring-bio',
-        questions: [
-          { type:'tf',
-            q:'Existuje huba, ktorá dokáže premeniť mravce na „zombies“ a ovplyvňovať ich správanie.',
-            options:['ÁNO','NIE'], correct:0,
-            ex:'Ophiocordyceps unilateralis napáda nervový systém mravcov a manipuluje ich správanie; plodnica potom rozsieva spóry.' },
-          { type:'mc',
-            q:'Čo sa ti stane, ak ťa uhryzne pradiarka pestrá (najjedovatejší pavúk bežne v SR)?',
-            options:['nič, jed nemá účinok','silná bolesť až kŕče/paralýza','okamžitá smrť'],
-            correct:1,
-            ex:'Uhryznutie je zriedkavé, ale môže spôsobiť silnú bolesť, kŕče až prechodnú paralýzu; liečiteľné.' },
-          { type:'mc',
-            q:'Motolica podivná (Leucochloridium) u slimákov…',
-            options:[
-              'larvy vniknú do očí a pulzovaním lákajú predátorov',
-              'vybuchne im žalúdok',
-              'zmení sa na kyselinu a roztopí mozog'
-            ],
-            correct:0,
-            ex:'Larvy putujú do očných výbežkov, pulzujú a vystavujú slimáka vtákom; cyklus pokračuje cez vtáčí trus.' },
-          { type:'mc',
-            q:'Sága stepná (najväčšia „kobylka“ u nás) je zaujímavá tým, že…',
-            options:[
-              'mení farbu ako chameleón',
-              'korisť loví ostňami na nohách',
-              'je prudko jedovatá'
-            ],
-            correct:1,
-            ex:'Sága stepná je bezkrídla predátorská kobylka; korisť pevne drží ostňami na nohách; patrí medzi najväčší hmyz Európy.' },
-          { type:'mc',
-            q:'Ak by si rozprestriel povrch tenkého čreva, plocha by zodpovedala približne…',
-            options:['polovici bedmintonového kurtu','parkovaciemu miestu','futbalovej lopte'],
-            correct:0,
-            ex:'Vďaka klkom a mikroklkom je plocha obrovská – približne desiatky m², často sa uvádza ~30 m².' },
-          { type:'tf',
-            q:'DNA eukaryotických buniek je vo väčšine prípadov uložená v jadre.',
-            options:['ÁNO','NIE'], correct:0,
-            ex:'Eukaryotická DNA je v jadre (a časť aj v mitochondriách/chloroplastoch); prokaryotá jadro nemajú.' },
-        ]
-      },
-
-      fyz: {
-        name: 'Fyzika',
-        portalId: 'portal-fyz',
-        badgeId: 'badge-fyz',
-        ringClass: 'ring-fyz',
-        questions: [
-          { type:'mc',
-            q:'Prečo vlak „počuť“ skôr cez koľajnice než vo vzduchu?',
-            options:[
-              'píska staničný rozhlas',
-              'v tuhých látkach sa zvuk šíri rýchlejšie než vo vzduchu',
-              'vlak vysiela varovný sonar'
-            ],
-            correct:1,
-            ex:'Častice kovu sú blízko pri sebe → rýchlejší prenos kmitov; zvuk v koľajniciach dorazí skôr.' },
-          { type:'tf',
-            q:'„Farby“ bez pozorovateľa neexistujú – sú to len vlnové dĺžky svetla.',
-            options:['ÁNO','NIE'], correct:0,
-            ex:'Svetlo má vlnovú dĺžku/frekvenciu; farba je zážitok vytvorený naším zrakom a mozgom.' },
-          { type:'mc',
-            q:'Ako kanvica vie, že má vypnúť?',
-            options:[
-              '„počúva“ bublinky a keď ich je dosť, vypne sa',
-              'AI teplomer preruší prúd',
-              'bimetalový pásik sa ohnutím rozpojí kontakt'
-            ],
-            correct:2,
-            ex:'Bimetal (dva kovy s rozdielnou rozťažnosťou) sa pri teple ohne a vypne spínač.' },
-          { type:'mc',
-            q:'Čo je najrizikovejšie nad otvorenou rúrou?',
-            options:[
-              'zlatá retiazka – vysoká tepelná vodivosť',
-              'látková ozdoba – ľahko vzbĺkne',
-              'plastová náušnica – prilepí sa roztavením'
-            ],
-            correct:0,
-            ex:'Kovy (napr. zlato) vedú teplo výborne → ľahko sa rozpália a môžu popáliť.' },
-          { type:'tf',
-            q:'Aurel Stodola bol obdivovaný Einsteinom.',
-            options:['ÁNO','NIE'], correct:0,
-            ex:'Stodola (parné stroje, turbíny) učil v Zürichu; s Einsteinom mal blízky kontakt a rešpekt.' },
-          { type:'tf',
-            q:'Opaľovanie (UV) je „bezpečnejšie“ než 5G rádiové vlny.',
-            options:['ÁNO','NIE'], correct:1,
-            ex:'UV je ionizujúce a poškodzuje DNA; 5G je neionizujúce s nižšou energiou fotónov.' },
-        ]
-      },
-
-      che: {
-        name: 'Chémia',
-        portalId: 'portal-che',
-        badgeId: 'badge-che',
-        ringClass: 'ring-che',
-        questions: [
-          { type:'tf',
-            q:'Vôňa pokosenej trávy je chemický signál varovania pre ďalšie rastliny.',
-            options:['ÁNO','NIE'], correct:0,
-            ex:'„Green leaf volatiles“ upozorňujú okolie na stres/poškodenie a spúšťajú obranné reakcie.' },
-          { type:'tf',
-            q:'Kofeín „dodáva“ energiu tým, že ju vyrobí naviac.',
-            options:['ÁNO','NIE'], correct:1,
-            ex:'Kofeín blokuje adenozínové receptory (únavové signály) a mení vnímanie; energiu sám nevyrába.' },
-          { type:'mc',
-            q:'Vedci vyvinuli mikróby, ktoré zložky z PET plastu premenia na…',
-            options:['čiernu dieru','účinný paracetamol','železnú rudu'],
-            correct:1,
-            ex:'Syntetická biológia umožňuje premeniť produkty rozkladu PET na farmaceutiká (napr. paracetamol).' },
-          { type:'mc',
-            q:'Psilocybín z „halucinogénnych“ húb sa skúma najmä pre…',
-            options:['lepšiu komunikáciu','orientáciu v priestore','pomoc pri úzkosti/depresii'],
-            correct:2,
-            ex:'Pod dohľadom odborníkov môže zlepšiť symptómy depresie/úzkosti; prebiehajú klinické štúdie.' },
-          { type:'mc',
-            q:'Banány obsahujú stopové množstvo prvku, vďaka ktorému sú…',
-            options:['liekom na zlomeniny','mierne rádioaktívne','žlté'],
-            correct:1,
-            ex:'Izotop K‑40 je prirodzene prítomný; dávky sú extrémne malé a neškodné.' },
-          { type:'tf',
-            q:'Molekula vody (H₂O) je polárna — preto výborne rozpúšťa iónové/polárne látky.',
-            options:['ÁNO','NIE'], correct:0,
-            ex:'Asymetrické rozdelenie náboja dáva vode dipól; to je základ jej „chemickej všestrannosti“.' },
-        ]
-      }
-    };
-
-    /* ================================================================
-       STAV KVÍZU & UI prepojenie
-       ================================================================ */
-    const elHome   = $('#screen-home');
-    const elQuiz   = $('#screen-quiz');
-    const elTitle  = $('#qTitle');
-    const elStep   = $('#qStep');
-    const elMeter  = $('#meterFill');
-    const elAns    = $('#answers');
-    const elExpl   = $('#explain');
-    const elExplTx = $('#explainText');
-    const elScore  = $('#scoreText');
-
-    const elEmail  = $('#email');
-    const elUse    = $('#btnUseEmail');
-    const elOut    = $('#btnSignOut');
-
-    const elPortBio = $('#portal-bio');
-    const elPortFyz = $('#portal-fyz');
-    const elPortChe = $('#portal-che');
-
-    const elBadgeBio = $('#badge-bio');
-    const elBadgeFyz = $('#badge-fyz');
-    const elBadgeChe = $('#badge-che');
-
-    const elPanelWho = $('#whoEmail');
-    const elProgList = $('#progressList');
-
-    const modalIntro   = $('#modalIntro');
-    const modalResult  = $('#modalResult');
-    const modalSources = $('#modalSources');
-
-    const btnSources = $('#btnSources');
-    const btnNext    = $('#btnNext');
-    const btnBackHome= $('#btnBackHome');
-
-    let session = {
-      email: '',
-      cat: '',
-      idx: 0,
-      score: 0,
-      answered: false,
-      list: []  // aktuálne otázky
-    };
-
-    /* ---------- pomocné UI ---------- */
-    function showScreen(which){
-      [elHome, elQuiz].forEach(s => s.classList.remove('active'));
-      if(which === 'home') elHome.classList.add('active');
-      if(which === 'quiz') elQuiz.classList.add('active');
-    }
-    function openModal(m){ m.classList.add('active'); trapFocus(m); }
-    function closeModal(m){ m.classList.remove('active'); releaseFocus(); }
-
-    // jednoduchý trap focus pre prístupnosť
-    let lastFocus = null;
-    function trapFocus(modal){
-      lastFocus = document.activeElement;
-      const focusables = modal.querySelectorAll('button, [href], input, [tabindex]:not([tabindex="-1"])');
-      const first = focusables[0], last = focusables[focusables.length-1];
-      modal.addEventListener('keydown', modal._key = (e)=>{
-        if(e.key==='Escape'){ closeModal(modal); }
-        if(e.key!=='Tab') return;
-        if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
-        else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
-      });
-      setTimeout(()=> first?.focus(), 0);
-    }
-    function releaseFocus(){
-      if(!lastFocus) return;
-      const modal = document.querySelector('.modal.active');
-      if(modal){ modal.removeEventListener('keydown', modal._key); }
-      lastFocus.focus();
-    }
-
-    /* ---------- e‑mail & portály ---------- */
-    async function useEmail(){
-      const email = elEmail.value.trim().toLowerCase();
-      const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-      if(!ok){ alert('Zadaj platný e‑mail.'); return; }
-
-      // voliteľne over jedinečnosť (online)
-      const check = await backendCheckEmailUnique(email);
-      if(!check.ok){
-        alert(check.reason || 'Tento e‑mail už bol použitý.');
+    elProgList.textContent=lines.join(' | ');
+  }
+}
+function attachPortal(btn,cat){
+  btn.addEventListener('click',async ()=>{
+    const email=getEmail();
+    if(!email){alert('Najprv zadaj a potvrď e-mail.');return}
+    // serverová kontrola (ak je k dispozícii)
+    if(db){
+      const serverQuizzes=await backendGetServerQuizzes(email);
+      if(serverQuizzes && serverQuizzes[cat]){
+        alert(`Tento kvíz už je na serveri hotový.\nVýsledok: ${serverQuizzes[cat].score}/${serverQuizzes[cat].total}`);
         return;
       }
-
-      claimEmail(email);
-      session.email = email;
-      renderHome();
     }
-
-    function renderHome(){
-      // aktivuj portály a ukáž stav
-      const email = getEmail();
-      session.email = email || '';
-      elPanelWho.textContent = email || '—';
-      elEmail.value = email || '';
-
-      const rec = email ? getRecord(email) : null;
-
-      // helper: nastaviť portál
-      const setPortal = (btn, badge, cat, ringClass) =>{
-        const done = !!rec?.quizzes?.[cat];
-        btn.setAttribute('aria-disabled', !email ? 'true' : 'false');
-        btn.classList.toggle('done', !!done);
-        badge.textContent = !email ? 'Neodomknuté' : (done ? `Hotovo: ${rec.quizzes[cat].score}/${rec.quizzes[cat].total}` : 'Pripravené');
-        badge.classList.toggle('done', !!done);
-      };
-
-      setPortal(elPortBio, elBadgeBio, 'bio', 'ring-bio');
-      setPortal(elPortFyz, elBadgeFyz, 'fyz', 'ring-fyz');
-      setPortal(elPortChe, elBadgeChe, 'che', 'ring-che');
-
-      // panel zoznam
-      if(!email){
-        elProgList.textContent = 'Zatiaľ nič nevyplnené. Odomkni portál a začni!';
-      } else if(!rec || !rec.quizzes || Object.keys(rec.quizzes).length === 0){
-        elProgList.textContent = 'Žiadne dokončené kvízy. Vyber si portál!';
-      } else {
-        const lines = ['Prehľad:'];
-        for(const k of ['bio','fyz','che']){
-          const r = rec.quizzes[k];
-          lines.push(`${QUIZZES[k].name}: ${r ? (r.score + '/' + r.total) : '—'}`);
-        }
-        elProgList.textContent = lines.join(' | ');
-      }
+    const rec=getRecord(email);
+    if(rec?.quizzes?.[cat]){
+      const r=rec.quizzes[cat]; alert(`Tento kvíz už máš hotový.\nVýsledok: ${r.score}/${r.total}`); return;
     }
+    startQuiz(cat);
+  });
+}
 
-    function attachPortal(btn, cat){
-      btn.addEventListener('click', ()=>{
-        const email = getEmail();
-        if(!email){ alert('Najprv zadaj a potvrď e‑mail.'); return; }
-        const rec = getRecord(email);
-        const done = !!rec?.quizzes?.[cat];
-        if(done){
-          const r = rec.quizzes[cat];
-          alert(`Tento kvíz už máš hotový.\nVýsledok: ${r.score}/${r.total}`);
-          return;
-        }
-        startQuiz(cat);
-      });
-    }
+function startQuiz(cat){
+  const pack=QUIZZES[cat];
+  session={email:getEmail(),cat,idx:0,score:0,answered:false,list:pack.questions.slice()};
+  showScreen('quiz'); renderQuestion();
+}
 
-    /* ---------- logika kvízu ---------- */
-    function startQuiz(cat){
-      const pack = QUIZZES[cat];
-      session.cat = cat;
-      session.idx = 0;
-      session.score = 0;
-      session.answered = false;
-      session.list = pack.questions.slice(); // kópia
+function renderQuestion(){
+  const q=session.list[session.idx], total=session.list.length;
+  $('#qTitle').textContent=`${session.idx+1}. ${q.q}`;
+  elAns.innerHTML=''; elExpl.classList.remove('active'); elExpl.innerHTML=rollupSkeleton(); session.answered=false;
 
-      showScreen('quiz');
-      renderQuestion();
-    }
+  elAns.className='answers'+(q.type==='tf'?' two':'');
+  const options=(q.type==='tf')?[{text:'ÁNO'},{text:'NIE'}]:q.options.map((t,i)=>({text:t,key:String.fromCharCode(65+i)}));
 
-    function renderQuestion(){
-      const q = session.list[session.idx];
-      const total = session.list.length;
+  options.forEach((opt,i)=>{
+    const b=document.createElement('button');
+    b.className='opt'+(q.type==='tf'?' big':''); b.setAttribute('role','listitem');
+    b.innerHTML=(q.type==='tf'?'':`<span class="key">${opt.key}</span>`)+opt.text;
+    b.addEventListener('click',()=>selectAnswer(q,i));
+    b.addEventListener('keyup',e=>{if(e.key==='Enter'||e.key===' ')selectAnswer(q,i)});
+    elAns.appendChild(b);
+  });
 
-      elTitle.textContent = `${session.idx+1}. ${q.q}`;
-      elAns.innerHTML = '';
-      elExpl.classList.remove('active');
-      session.answered = false;
+  const pct=Math.round((session.idx/total)*100);
+  $('#qStep').textContent=`Otázka ${session.idx+1}/${total} • ${pct}%`;
+  $('#meterFill').style.width=`${pct}%`;
+  elScore.textContent=`Skóre: ${session.score}`;
+}
 
-      // layout ÁNO/NIE = dve veľké tlačidlá
-      elAns.className = 'answers' + (q.type==='tf' ? ' two' : '');
+function selectAnswer(q,i){
+  if(session.answered) return;
+  const nodes=[...elAns.children]; nodes.forEach(n=>n.disabled=true);
 
-      const options = q.type==='tf' ? [{key:'ÁNO', text:'ÁNO'}, {key:'NIE', text:'NIE'}]
-                                    : q.options.map((t,i)=>({key:String.fromCharCode(65+i), text:t}));
+  const correctIndex=q.correct;
+  const hit=i===correctIndex;
+  if(hit){session.score++; nodes[i].classList.add('correct'); nodes[i].setAttribute('data-tag','SPRÁVNE')}
+  else{nodes[i].classList.add('wrong'); nodes[i].setAttribute('data-tag','NESPRÁVNE'); if(nodes[correctIndex]){nodes[correctIndex].classList.add('correct'); nodes[correctIndex].setAttribute('data-tag','SPRÁVNA')}}
 
-      options.forEach((opt, i)=>{
-        const btn = document.createElement('button');
-        btn.className = 'opt' + (q.type==='tf' ? ' big' : '');
-        btn.setAttribute('role','listitem');
-        btn.innerHTML = (q.type==='tf' ? '' : `<span class="key">${opt.key}</span>`) + opt.text;
-        btn.addEventListener('click', ()=> selectAnswer(q, i));
-        btn.addEventListener('keyup', (e)=>{ if(e.key==='Enter' || e.key===' ') selectAnswer(q, i); });
-        elAns.appendChild(btn);
-      });
+  const rollDiv=$('#rollContent');
+  rollDiv.innerHTML = `
+    ${q.ex?`<p>${q.ex}</p>`:''}
+    ${Array.isArray(q.sources)&&q.sources.length?`
+      <div style="margin-top:6px"><strong>Zdroje:</strong>
+        <ul class="src-list">
+          ${q.sources.map(s=>`<li><a href="${s.url}" target="_blank" rel="noopener">${s.label||s.url}</a></li>`).join('')}
+        </ul>
+      </div>`:''}
+  `;
+  elExpl.classList.add('active');
+  session.answered=true;
 
-      // krok + percentá
-      const pct = Math.round((session.idx / total) * 100);
-      elStep.textContent = `Otázka ${session.idx+1}/${total} • ${pct}%`;
-      elMeter.style.width = `${pct}%`;
-      elScore.textContent = `Skóre: ${session.score}`;
-    }
+  const total=session.list.length;
+  const pct=Math.round(((session.idx+1)/total)*100);
+  $('#qStep').textContent=`Otázka ${session.idx+1}/${total} • ${pct}%`;
+  $('#meterFill').style.width=`${pct}%`;
+  $('#btnNext').focus();
+}
 
-    function selectAnswer(q, i){
-      if(session.answered) return;
-      const nodes = [...elAns.children];
-      nodes.forEach(n=> n.disabled = true);
+function rollupSkeleton(){
+  return `
+    <button class="rollup-btn" id="rollBtn" aria-expanded="false" aria-controls="rollContent">Vysvetlenie ⯆</button>
+    <div class="rollup-content" id="rollContent" role="region" aria-label="Vysvetlenie"></div>
+    <div class="qfooter" style="margin-top:10px">
+      <div class="score" id="scoreText">Skóre: ${session.score}</div>
+      <button class="btn" id="btnNext">Ďalšia otázka</button>
+    </div>
+  `;
+}
+document.addEventListener('click',e=>{
+  if(e.target && e.target.id==='rollBtn'){
+    const c=$('#rollContent'); const open=c.classList.toggle('open');
+    e.target.setAttribute('aria-expanded', open?'true':'false');
+    e.target.textContent=open?'Skryť vysvetlenie ⯅':'Vysvetlenie ⯆';
+  }
+});
+document.addEventListener('click',async e=>{
+  if(e.target && e.target.id==='btnNext'){
+    if(!session.answered){alert('Najprv vyber odpoveď.');return}
+    session.idx++;
+    if(session.idx>=session.list.length){await finishQuiz()}
+    else{renderQuestion()}
+  }
+});
 
-      const correctIndex = (q.type==='tf')
-        ? (q.options ? q.correct : q.correct) // kompatibilita
-        : q.correct;
+async function finishQuiz(){
+  const total=session.list.length, score=session.score;
+  // server-side save (ak je k dispozícii)
+  const res=await backendSaveResult({email:session.email, category:session.cat, score, total});
+  if(res && res.ok===false && res.reason){
+    alert(res.reason);
+    showScreen('home'); renderHome(); return;
+  }
+  // lokálne ulož (aj keď sa uložilo na serveri; nech je UI konzistentné)
+  setResultLocal(session.email, session.cat, score, total);
 
-      const hit = i === correctIndex;
-      if(hit){
-        session.score++;
-        nodes[i].classList.add('correct');
-        nodes[i].setAttribute('data-tag','SPRÁVNE');
-      } else {
-        nodes[i].classList.add('wrong');
-        nodes[i].setAttribute('data-tag','NESPRÁVNE');
-        // zvýrazni správnu
-        const ci = correctIndex;
-        if(nodes[ci]){
-          nodes[ci].classList.add('correct');
-          nodes[ci].setAttribute('data-tag','SPRÁVNA');
-        }
-      }
+  $('#finalScore').textContent=score;
+  $('#totalQ').textContent=total;
+  $('#pct').textContent=`${Math.round(score/total*100)}%`;
+  openModal(modalResult);
+}
 
-      elExplTx.textContent = q.ex || '';
-      elExpl.classList.add('active');
-      session.answered = true;
+btnBackHome.addEventListener('click',()=>{
+  closeModal(modalResult); showScreen('home'); renderHome();
+  const p=QUIZZES[session.cat]?.portalId; if(p) document.getElementById(p).focus();
+});
 
-      // posun progressu (po zodpovedaní)
-      const total = session.list.length;
-      const pct = Math.round(((session.idx+1) / total) * 100);
-      elStep.textContent = `Otázka ${session.idx+1}/${total} • ${pct}%`;
-      elMeter.style.width = `${pct}%`;
+/* Portály */
+(function attach(){[ ['bio',elPortBio], ['fyz',elPortFyz], ['che',elPortChe] ]
+  .forEach(([cat,btn])=>attachPortal(btn,cat));})();
 
-      // UX: fokus na „Ďalšia otázka”
-      btnNext.focus();
-    }
+/* E-mail */
+$('#btnUseEmail').addEventListener('click',useEmail);
+$('#email').addEventListener('keydown',e=>{if(e.key==='Enter')useEmail()});
+$('#btnSignOut').addEventListener('click',()=>{signOut();renderHome()});
 
-    btnNext.addEventListener('click', ()=>{
-      if(!session.answered){ alert('Najprv vyber odpoveď.'); return; }
-      session.idx++;
-      if(session.idx >= session.list.length){
-        finishQuiz();
-      } else {
-        renderQuestion();
-      }
-    });
-
-    async function finishQuiz(){
-      const total = session.list.length;
-      const score = session.score;
-
-      // uložiť lokálne + (voliteľne) na backend
-      setResult(session.email, session.cat, score, total);
-      await backendSaveResult({ email: session.email, category: session.cat, score, total });
-
-      // vyhodnotenie
-      const ratio = score/total;
-      $('#finalScore').textContent = score;
-      $('#totalQ').textContent = total;
-      $('#pct').textContent = `${Math.round(ratio*100)}%`;
-
-      const badge = $('#tierBadge'); const text = $('#tierText');
-      if(ratio >= .84){ badge.textContent='Zlatá úroveň'; badge.className='tier gold'; text.textContent='Špičkový výkon! Zlatá úroveň žiari ✨'; }
-      else if(ratio >= .5){ badge.textContent='Strieborná úroveň'; badge.className='tier silver'; text.textContent='Výborne! Ešte kúsok k zlatu.'; }
-      else { badge.textContent='Bronzová úroveň'; badge.className='tier'; text.textContent='Bronz je len začiatok. Dáš to nabudúce!' }
-
-      openModal(modalResult);
-    }
-
-    btnBackHome.addEventListener('click', ()=>{
-      closeModal(modalResult);
-      showScreen('home');
-      renderHome();
-      // fokus späť na portál danej kategórie
-      const p = QUIZZES[session.cat]?.portalId;
-      if(p) document.getElementById(p).focus();
-    });
-
-    /* ---------- init / eventy ---------- */
-    // Portály (click handlers)
-    attachPortal(elPortBio, 'bio');
-    attachPortal(elPortFyz, 'fyz');
-    attachPortal(elPortChe, 'che');
-
-    // E‑mail
-    elUse.addEventListener('click', useEmail);
-    elEmail.addEventListener('keydown', e=>{ if(e.key==='Enter') useEmail(); });
-    elOut.addEventListener('click', ()=>{ signOut(); renderHome(); });
-
-    // Modály: close tlačidlá
-    document.addEventListener('click', (e)=>{
-      const t = e.target.closest('[data-close]');
-      if(!t) return;
-      const sel = t.getAttribute('data-close');
-      const m = document.querySelector(sel);
-      if(m) closeModal(m);
-    });
-    // Zdroje
-    btnSources.addEventListener('click', ()=> openModal(modalSources));
-
-    // Spustiť — predvyplniť e‑mail, zobraziť intro iba raz za session
-    window.addEventListener('DOMContentLoaded', ()=>{
-      const saved = getEmail();
-      if(saved){ elEmail.value = saved; }
-      renderHome();
-      // intro pri prvom načítaní
-      if(!sessionStorage.getItem('vvk_intro_seen')){
-        openModal(modalIntro);
+/* Intro + Rewards pri štarte */
+window.addEventListener('DOMContentLoaded',()=>{
+  const saved=getEmail(); if(saved) $('#email').value=saved;
+  renderHome();
+  // Otvor plagát odmien hneď po štarte (iba raz za session)
+  if(!sessionStorage.getItem('vvk_rewards_seen')){ openModal(modalRewards); sessionStorage.setItem('vvk_rewards_seen','1'); }
+  // Ak ešte nebol intro modal, zobrazíme ho po zavretí odmien
+  if(!sessionStorage.getItem('vvk_intro_seen')){
+    const handler=(e)=>{
+      const t=e.target.closest('[data-close]');
+      if(t && t.getAttribute('data-close')==='#modalRewards'){
+        document.removeEventListener('click', handler);
         sessionStorage.setItem('vvk_intro_seen','1');
+        setTimeout(()=>openModal(modalIntro), 120);
       }
-    });
-  </script>
+    };
+    document.addEventListener('click', handler);
+  }
+});
+btnRewards.addEventListener('click',()=>openModal(modalRewards));
+btnIntro.addEventListener('click',()=>openModal(modalIntro));
+
+/* Zavretie modálov (X) – generické */
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-close]'); if(!t) return;
+  const sel=t.getAttribute('data-close'); const m=document.querySelector(sel); if(m) closeModal(m);
+});
+</script>
 </body>
-</
+</html>
