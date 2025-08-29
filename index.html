@@ -141,8 +141,6 @@
   .social{position:fixed;left:18px;bottom:18px;z-index:5;display:flex;gap:10px;align-items:center}
   .social a{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;border:1px solid var(--glass);background:rgba(10,14,34,.6);text-decoration:none;color:var(--text);font-weight:800}
   .social img{width:20px;height:20px;display:inline-block}
-  @media (prefers-reduced-motion:reduce){.p-ring{animation:none}.btn:hover{transform:none}}
-  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 </style>
 </head>
 <body>
@@ -153,11 +151,11 @@
           <img src="VVK Logo - transparent.png" alt="Logo VEDA V KOCKE" class="logo-img">
           <div>
             <h1>VEDA V KOCKE</h1>
-            <div class="claim">Prebudiť svoju <strong>#zvedavosť</strong></div>
+            <div class="claim">Prebuď svoju <strong>#zvedavosť</strong></div>
           </div>
         </div>
         <div class="top-actions">
-          <button class="btn" id="btnRewards">Čo si vieš vyzdvihnúť?</button>
+          <button class="btn" id="btnRewards">Čo vieš vyhrať?</button>
           <button class="btn ghost" id="btnIntro">Info o kvízoch</button>
         </div>
       </header>
@@ -256,8 +254,7 @@
   <div class="modal" id="modalRewards" role="dialog" aria-modal="true" aria-labelledby="rewardsTitle">
     <div class="box">
       <button class="close-x" data-close="#modalRewards" aria-label="Zavrieť">✕</button>
-      <h2 id="rewardsTitle">Odmeny</h2>
-      <img src="rewards-poster.png" alt="Zapoj sa do kvízov a vyhraj nadupané ceny — odmeny podľa počtu spravených kvízov" style="width:100%;border-radius:14px">
+      <h2 id="rewardsTitle">VITAJTE!</h2>
     </div>
   </div>
 
@@ -267,7 +264,7 @@
       <button class="close-x" data-close="#modalResult" aria-label="Zavrieť">✕</button>
       <h2 id="resTitle">Hotovo! 🎉</h2>
       <p>Získali ste <strong id="finalScore"></strong> bodov z <strong id="totalQ"></strong> (<span id="pct"></span>).</p>
-      <p style="font-weight:700">Gratulujeme, kvíz máte spravený! Príďte si na stanovište vyzdvihnúť odmenu.</p>
+      <p style="font-weight:700">Gratulujeme, kvíz máte spravený! Príďte si na stanovište vyzdvihnúť odmenu, alebo pokračujte s kvízmi a odmenu si zväčšte!.</p>
       <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:10px">
         <button class="btn" id="btnBackHome">Naspäť na hlavnú stránku</button>
       </div>
@@ -326,7 +323,6 @@ function setResultLocal(email,cat,score,total){const reg=loadRegistry(); if(!reg
 
 /* ===== Backend háčiky (lokál + voliteľný Firestore) ===== */
 async function backendCheckEmailUnique(email){
-  // Firestore: email slúži ako ID dokumentu (unikát)
   if(db){
     const docRef=db.collection('vvk_users').doc(email);
     const snap=await docRef.get();
@@ -335,17 +331,14 @@ async function backendCheckEmailUnique(email){
     }
     return {ok:true};
   }
-  // fallback (čisto lokálne)
   return {ok:true};
 }
-
 async function backendGetServerQuizzes(email){
   if(!db) return null;
   const docRef=db.collection('vvk_users').doc(email);
   const snap=await docRef.get();
   return snap.exists ? (snap.data().quizzes || null) : null;
 }
-
 async function backendSaveResult({email,category,score,total}){
   if(db){
     const docRef=db.collection('vvk_users').doc(email);
@@ -362,7 +355,8 @@ async function backendSaveResult({email,category,score,total}){
   return {ok:true};
 }
 
-/* ================== DÁTA KVÍZOV — opravené formulácie ================== */
+/* ================== DÁTA KVÍZOV ================== */
+/* (ponechané podľa tvojho posledného znenia) */
 const QUIZZES={
   bio:{
     name:'Biológia', portalId:'portal-bio', badgeId:'badge-bio', ringClass:'ring-bio',
@@ -374,7 +368,7 @@ const QUIZZES={
        sources:[{label:'Review',url:'https://doi.org/10.1016/j.funbio.2011.04.008'}]},
       {type:'mc',
        q:'Čo sa ti stane, ak ťa uhryzne pradiarka pestrá (najjedovatejší pavúk v SR)?',
-       options:['nič, jed nemá účinok','silná bolesť až kŕče/paralýza','okamžitá smrť'],
+       options:['nič, jed nemá na človeka žiadne účinky','silná bolesť až kŕče/paralýza','okamžitá smrť'],
        correct:1,
        ex:'Uhryznutie je zriedkavé, ale môže spôsobiť <strong>bolesť, kŕče až prechodnú paralýzu</strong>. Liečiteľné modernou medicínou.',
        sources:[{label:'SAV',url:'https://www.sav.sk/?lang=sk&doc=services-news&source_no=20&news_no=12555'}]},
@@ -383,20 +377,20 @@ const QUIZZES={
        options:[
          'jej larvy sa dostanú do ich očí, kde pulzujú a lákajú predátorov',
          'dostane sa do ich žalúdka a nechá ich explodovať',
-         'prenikne do mozgu a premení sa na kyselinu'
+         'prenikne do mozgu a premení sa na kyselinu, ktorá postupne roztopí slimákov'
        ],
        correct:0,
        ex:'Larvy sa po zjedení vajíčok dostanú <strong>do očných výbežkov</strong>, farebne pulzujú a robia slimáka ľahkou korisťou vtákov. Cyklus pokračuje cez vtáčí trus.',
        sources:[{label:'Parasitology prehľad',url:'https://doi.org/10.1007/s00436-013-3393-6'}]},
       {type:'mc',
        q:'Sága stepná je najväčšou kobylkou na Slovensku, ktorá môže mať dĺžku až 12 cm. Čo je na nej ešte zaujímavé?',
-       options:['dokáže meniť farbu ako chameleón','korisť loví ostňami na nohách','je prudko jedovatá'],
+       options:['dokáže meniť farbu ako chameleón','korisť loví pichliačmi na nohách','je prudko jedovatá'],
        correct:1,
        ex:'Sága stepná je bezkrídla predátorská kobylka. Korisť <strong>pevne zviera ostňami</strong> na predných nohách; patrí medzi najväčší hmyz Európy.',
        sources:[{label:'Dokumentárne zábery (hľadaj „Saga pedo“)',url:'https://www.youtube.com/results?search_query=Saga+pedo'}]},
       {type:'mc',
        q:'Ak by si rozprestrel povrch tenkého čreva, plocha by zodpovedala približne…',
-       options:['polovici bedmintonového kurtu','parkovaciemu miestu','futbalovej lopte'],
+       options:['polovici bedmintonového kurtu','parkovaciemu miestu auta','futbalovej lopte'],
        correct:0,
        ex:'Vďaka klkom a mikroklkom je plocha tenkého čreva približne <strong>desiatky m²</strong> (často ~30 m²) — teda skoro polovica bedmintonového kurtu.',
        sources:[{label:'BioNumbers',url:'https://bionumbers.hms.harvard.edu/bionumber.aspx?s=n&v=5&id=111126'}]},
@@ -409,9 +403,9 @@ const QUIZZES={
       {type:'mc',
        q:'Na železnici môžeme počuť vlak prichádzať skôr — často vďaka „pískaniu“ bŕzd na koľajniciach — hoci ho ešte nevidíme. Prečo je tomu tak?',
        options:[
-         'v skutočnosti „píska“ staničný rozhlas',
-         'zvuk sa šíri rýchlejšie v tuhých látkach ako vo vzduchu',
-         'vlak vysiela pred seba zvukový signál'
+         'v skutočnosti „píska“ staničný rozhlas, nie brzdy vlaku',
+         'zvuk sa šíri rýchlejšie v tuhých látkach ako vo vzduchu - zvuk bŕzd ku nám dorazí skôr ako samotný vlak',
+         'vlak vysiela pred seba zvukový signál ako varovanie pre cestujúcich'
        ],
        correct:1,
        ex:'V kovoch sú častice bližšie pri sebe, preto sa mechanické kmity (zvuk) prenášajú <strong>rýchlejšie</strong> než vo vzduchu. Brzdenie „počuť“ cez koľajnice skôr, než vlak dorazí.',
@@ -425,9 +419,9 @@ const QUIZZES={
       {type:'mc',
        q:'Ako vie kanvica, kedy je voda pripravená na čaj alebo kávu?',
        options:[
-         '„počúva“ bublinky a keď ich je dosť, vypne sa',
-         'má v sebe teplomer s AI',
-         'obsahuje bimetalový pásik, ktorý sa ohnutím vypne'
+         'dokáže načúvať bublinkám zahrievajúcej sa vody a keď z nich počuje dostatok vrieť, vypne sa  blinky a keď ich je dosť, vypne sa',
+         'má v sebe teplomer s umelou inteligenciou, ktorá vypne prívod elektriny do kanvice, keď je voda zohriata',
+         'obsahuje súčiastku z 2 kovov s rozdielnou teplotnou rozťažnosťou - jedna polovica sa roztiahne viac ako druhá, a tak sa súčiastka ohne, čím vypne prívod elektriny do kanvice '
        ],
        correct:2,
        ex:'V kanvici je <strong>bimetal</strong> (dva kovy s odlišnou rozťažnosťou). Pri zahriatí sa ohne a mechanicky rozpojí kontakt.',
@@ -435,9 +429,9 @@ const QUIZZES={
       {type:'mc',
        q:'Cukrárka má na sebe zlatú retiazku, bavlnenú ozdobu vo vlasoch a plastovú náušnicu. Keď vkladá koláč do rúry, zostáva nahnutá nad rozohriatou rúrou. Aké riziko jej hrozí?',
        options:[
-         'zlatá retiazka ju popáli (vysoká tepelná vodivosť)',
-         'látková ozdoba môže vzbĺknuť',
-         'plastová náušnica sa roztopí a prilepí'
+         'zlatá retiazka ju popáli, pretože má najväčšiu tepelnú vodivosť',
+         'látková ozdoba môže vplyvom teploty vzbĺknuť',
+         'plastová náušnica sa roztopí a prilepí sa k uchu'
        ],
        correct:0,
        ex:'Kovy (napr. <strong>zlato</strong>) výborne vedú teplo → ľahko sa rozpália a môžu popáliť. Krátke nahnutie nad rúru spravidla nestačí na vzplanutie látky či roztavenie plastu.',
@@ -478,13 +472,13 @@ const QUIZZES={
        ]},
       {type:'mc',
        q:'Existujú huby, ktoré nám dokážu spôsobiť halucinácie — tzv. halucinogénne. Vedci začali skúmať ich možné lekárske využitie. Aké?',
-       options:['Zlepšujú komunikáciu','Pomáhajú pri liečení úzkosti a depresie','Zlepšujú orientáciu v priestore'],
+       options:['Zlepšujú nám schopnosť komunikovať','Pomáhajú pri liečení úzkosti a depresie','Dokážeme sa lepšie orientovať v priestore'],
        correct:1,
        ex:'V kontrolovanom prostredí môže psilocybín zlepšovať symptómy <strong>depresie/úzkosti</strong>; prebiehajú klinické štúdie.',
        sources:[{label:'PNAS',url:'https://doi.org/10.1073/pnas.0308037100'}]},
       {type:'mc',
        q:'Banány obsahujú malé množstvo istého prvku, vďaka ktorému sú…',
-       options:['účinné pri liečení zlomenín','doslova rádioaktívne','žlté'],
+       options:['sú účinné pri liečení zlomenín','sú doslova rádioaktívne','nadobúdajú svoju žltú farbu'],
        correct:1,
        ex:'Obsahujú izotop <strong>K-40</strong>; dávka je extrémne nízka a neškodná.',
        sources:[{label:'Science Focus',url:'https://www.sciencefocus.com/science/how-many-bananas-would-i-need-to-eat-to-become-radioactive'}]},
@@ -546,7 +540,6 @@ function attachPortal(btn,cat){
   btn.addEventListener('click',async ()=>{
     const email=getEmail();
     if(!email){alert('Najprv zadaj a potvrď e-mail.');return}
-    // serverová kontrola (ak je k dispozícii)
     if(db){
       const serverQuizzes=await backendGetServerQuizzes(email);
       if(serverQuizzes && serverQuizzes[cat]){
@@ -648,13 +641,11 @@ document.addEventListener('click',async e=>{
 
 async function finishQuiz(){
   const total=session.list.length, score=session.score;
-  // server-side save (ak je k dispozícii)
   const res=await backendSaveResult({email:session.email, category:session.cat, score, total});
   if(res && res.ok===false && res.reason){
     alert(res.reason);
     showScreen('home'); renderHome(); return;
   }
-  // lokálne ulož (aj keď sa uložilo na serveri; nech je UI konzistentné)
   setResultLocal(session.email, session.cat, score, total);
 
   $('#finalScore').textContent=score;
@@ -663,7 +654,7 @@ async function finishQuiz(){
   openModal(modalResult);
 }
 
-btnBackHome.addEventListener('click',()=>{
+btnBackHome?.addEventListener('click',()=>{
   closeModal(modalResult); showScreen('home'); renderHome();
   const p=QUIZZES[session.cat]?.portalId; if(p) document.getElementById(p).focus();
 });
@@ -677,25 +668,93 @@ $('#btnUseEmail').addEventListener('click',useEmail);
 $('#email').addEventListener('keydown',e=>{if(e.key==='Enter')useEmail()});
 $('#btnSignOut').addEventListener('click',()=>{signOut();renderHome()});
 
-/* Intro + Rewards pri štarte */
-window.addEventListener('DOMContentLoaded',()=>{
+/* ====== Rewards – autoshown 3s a „zaletenie“ do tlačidla ====== */
+function flyRewardsIntoButton(){
+  const poster = document.getElementById('rewardsPoster');
+  const btn = document.getElementById('btnRewards');
+  if(!poster || !btn) return closeModal(modalRewards);
+
+  // Rešpektuj reduced motion
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Získaj pozície
+  const pr = poster.getBoundingClientRect();
+  const br = btn.getBoundingClientRect();
+
+  if(prefersReduced){
+    // Bez animácie: zavri a jemne zvýrazni tlačidlo
+    closeModal(modalRewards);
+    btn.classList.add('btn-pulse');
+    setTimeout(()=>btn.classList.remove('btn-pulse'), 1300);
+    return;
+  }
+
+  // Vytvor lietajúcu kópiu
+  const fly = document.createElement('img');
+  fly.src = poster.src;
+  fly.alt = '';
+  fly.className = 'poster-fly';
+  document.body.appendChild(fly);
+
+  // Inicializuj na pozíciu plagátu
+  Object.assign(fly.style, {
+    left: pr.left + 'px',
+    top: pr.top + 'px',
+    width: pr.width + 'px',
+    height: pr.height + 'px',
+    opacity: '1',
+    transform: 'translate(0,0) scale(1)'
+  });
+
+  // Zavri modal (aby neprekážal) s malým oneskorením, kým sa začne let
+  setTimeout(()=> closeModal(modalRewards), 40);
+
+  // Cieľ: na stred tlačidla, zmenšiť
+  const targetW = Math.max(40, Math.min(80, br.width));   // približná cieľová šírka „odznaku“
+  const targetH = targetW * (pr.height/pr.width);
+
+  // Vypočítaj posun
+  const startX = pr.left, startY = pr.top;
+  const endX = br.left + (br.width/2) - (targetW/2);
+  const endY = br.top + (br.height/2) - (targetH/2);
+
+  // Spustenie animácie v ďalšom frame
+  requestAnimationFrame(()=>{
+    Object.assign(fly.style, {
+      left: endX + 'px',
+      top: endY + 'px',
+      width: targetW + 'px',
+      height: targetH + 'px',
+      opacity: '0.1',
+      transform: 'translate(0,0) scale(1)'
+    });
+  });
+
+  // Po animácii: odstráň, pulzni tlačidlo
+  fly.addEventListener('transitionend', ()=>{
+    fly.remove();
+    btn.classList.add('btn-pulse');
+    setTimeout(()=>btn.classList.remove('btn-pulse'), 1300);
+  }, { once:true });
+}
+
+/* Intro + Rewards pri štarte (upravené) */
+window.addEventListener('DOMContentLoaded', ()=>{
   const saved=getEmail(); if(saved) $('#email').value=saved;
   renderHome();
-  // Otvor plagát odmien hneď po štarte (iba raz za session)
-  if(!sessionStorage.getItem('vvk_rewards_seen')){ openModal(modalRewards); sessionStorage.setItem('vvk_rewards_seen','1'); }
-  // Ak ešte nebol intro modal, zobrazíme ho po zavretí odmien
-  if(!sessionStorage.getItem('vvk_intro_seen')){
-    const handler=(e)=>{
-      const t=e.target.closest('[data-close]');
-      if(t && t.getAttribute('data-close')==='#modalRewards'){
-        document.removeEventListener('click', handler);
-        sessionStorage.setItem('vvk_intro_seen','1');
-        setTimeout(()=>openModal(modalIntro), 120);
-      }
-    };
-    document.addEventListener('click', handler);
+
+  // Ukáž odmeny na 3 sekundy a potom ich "zasuň" do tlačidla — len raz za session
+  if(!sessionStorage.getItem('vvk_rewards_fly_done')){
+    openModal(modalRewards);
+    setTimeout(()=>{
+      flyRewardsIntoButton();
+      sessionStorage.setItem('vvk_rewards_fly_done','1');
+      // Po krátkej pauze môžeš (ak chceš) jemne ponúknuť aj intro
+      setTimeout(()=>openModal(modalIntro), 250);
+    }, 3000);
   }
 });
+
 btnRewards.addEventListener('click',()=>openModal(modalRewards));
 btnIntro.addEventListener('click',()=>openModal(modalIntro));
 
